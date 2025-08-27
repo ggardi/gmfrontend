@@ -1,4 +1,4 @@
-import "./App.css";
+import "./assets/App.css";
 import { Routes, Route } from "react-router-dom";
 import AboutYou from "./routes/AboutYou";
 import LoanType from "./routes/LoanType";
