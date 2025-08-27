@@ -1,0 +1,50 @@
+import React from "react";
+import AppBar from "@mui/material/AppBar";
+import Toolbar from "@mui/material/Toolbar";
+
+import Box from "@mui/material/Box";
+import appConfig from "../config/appConfig";
+import guildLogo from "../assets/img/guild-logo.svg";
+
+const Header = () => (
+  <AppBar
+    position="static"
+    color="default"
+    sx={{ bgcolor: "#fff", padding: "0 40px" }}
+  >
+    <Toolbar>
+      <Box sx={{ flexGrow: 1 }}>
+        <a
+          href={appConfig.headerLogoLink}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ display: "inline-flex", alignItems: "center" }}
+        >
+          <img src={guildLogo} alt="Guild Mortgage Logo" className="logo" />
+        </a>
+      </Box>
+      <Box
+        sx={{
+          display: "flex",
+          gap: 2,
+          justifyContent: "flex-end",
+          flexGrow: 0,
+        }}
+      >
+        <a
+          href={appConfig.headerLogoLink}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ marginRight: 16, alignSelf: "center" }}
+        >
+          Back to Site
+        </a>
+        <a href="/contact-us" style={{ alignSelf: "center" }}>
+          Contact Us
+        </a>
+      </Box>
+    </Toolbar>
+  </AppBar>
+);
+
+export default Header;
