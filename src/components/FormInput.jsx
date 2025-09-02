@@ -51,7 +51,7 @@ const FormInput = ({ label, error, className = "", ...props }) => {
         },
         "& .MuiFilledInput-root": {
           border: "1px solid #ccc",
-          borderRadius: 2,
+          borderRadius: 1,
           backgroundColor: "#fff",
           transition: "border-color 0.2s",
           height: 51,
