@@ -1,29 +1,33 @@
 import React from "react";
+import PropTypes from "prop-types";
+import Button from "@mui/material/Button";
+import CircularProgress from "@mui/material/CircularProgress";
 
-const Button = ({
-  children,
-  variant = "primary",
-  disabled = false,
-  className = "",
-  ...props
-}) => {
-  const baseClasses = "btn btn-full";
-  const variantClasses = {
-    primary: "btn-primary",
-    success: "btn-success",
-    danger: "btn-danger",
-    secondary: "btn-secondary",
-  };
+const GuildButton = ({ children, loading, disabled, color, sx, ...props }) => (
+  <Button
+    color={color}
+    disabled={disabled || loading}
+    sx={sx}
+    startIcon={loading ? <CircularProgress color="inherit" size={20} /> : null}
+    {...props}
+  >
+    {children}
+  </Button>
+);
 
-  const classes = `${baseClasses} ${
-    variantClasses[variant] || variantClasses.primary
-  } ${className}`;
-
-  return (
-    <button className={classes} disabled={disabled} {...props}>
-      {children}
-    </button>
-  );
+GuildButton.propTypes = {
+  color: PropTypes.string,
+  children: PropTypes.node.isRequired,
+  loading: PropTypes.bool,
+  disabled: PropTypes.bool,
+  sx: PropTypes.object,
 };
 
-export default Button;
+GuildButton.defaultProps = {
+  loading: false,
+  disabled: false,
+  color: "inherit",
+  sx: {},
+};
+
+export default GuildButton;

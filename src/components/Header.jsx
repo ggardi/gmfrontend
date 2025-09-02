@@ -20,7 +20,17 @@ const Header = () => (
           rel="noopener noreferrer"
           style={{ display: "inline-flex", alignItems: "center" }}
         >
-          <img src={guildLogo} alt="Guild Mortgage Logo" className="logo" />
+          <Box
+            component="img"
+            src={guildLogo}
+            alt="Guild Mortgage Logo"
+            sx={{
+              width: 94,
+              height: "auto",
+              display: "block",
+              margin: "23px 0",
+            }}
+          />
         </a>
       </Box>
       <Box

@@ -1,0 +1,8 @@
+@font-face {
+    font-family: "GuildCircularWeb";
+    src: url("./fonts/GuildCircularWeb-Book.eot");
+    src: url("./fonts/GuildCircularWeb-Book.woff2") format("woff2"),
+        url("./fonts/GuildCircularWeb-Book.woff") format("woff");
+    font-weight: normal;
+    font-style: normal;
+}

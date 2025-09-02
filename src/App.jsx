@@ -1,4 +1,3 @@
-import "./assets/App.css";
 import { Routes, Route } from "react-router-dom";
 import AboutYou from "./routes/AboutYou";
 import LoanType from "./routes/LoanType";
@@ -16,7 +15,53 @@ export default function App() {
   const theme = createTheme({
     palette: {
       primary: {
-        main: "#1976d2", // Customize this color as needed
+        main: "#262A82", // Guild brand primary color
+        contrastText: "#fff",
+      },
+      secondary: {
+        main: "#f3c300", // Guild brand secondary color
+        contrastText: "#262A82",
+      },
+      action: {
+        disabled: "#DFDFDF",
+      },
+      // add more custom colors or palette options here
+    },
+    typography: {
+      fontFamily:
+        "'GuildCircularWeb', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
+    },
+    components: {
+      MuiCssBaseline: {
+        styleOverrides: (theme) => ({
+          a: {
+            fontWeight: 400,
+            textTransform: "none",
+            letterSpacing: "0.4px",
+            color: "#0000f0",
+            fontSize: "12px",
+            textDecoration: "none",
+            transition: "color 0.2s",
+          },
+          "a:hover, a:focus": {
+            textDecoration: "underline",
+          },
+          h2: {
+            color: theme.palette.primary.main,
+          },
+        }),
+      },
+      MuiButton: {
+        styleOverrides: {
+          root: {
+            minWidth: 121,
+            minHeight: 48,
+            fontSize: 16,
+            borderRadius: 0,
+            textTransform: "none",
+            boxShadow: "none",
+          },
+        },
       },
     },
   });
