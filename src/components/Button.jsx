@@ -12,6 +12,12 @@ const GuildButton = ({ children, loading, disabled, color, sx, ...props }) => {
       color={color}
       disabled={disabled || loading}
       sx={{
+        minWidth: 121,
+        minHeight: 48,
+        fontSize: 16,
+        borderRadius: 0,
+        textTransform: "none",
+        boxShadow: "none",
         ...sx,
         ...(disabled || loading
           ? { color: theme.palette.text.primary + " !important" }

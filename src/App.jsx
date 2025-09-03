@@ -57,23 +57,6 @@ export default function App() {
           },
         }),
       },
-      MuiButton: {
-        styleOverrides: {
-          root: {
-            minWidth: 121,
-            minHeight: 48,
-            fontSize: 16,
-            borderRadius: 0,
-            textTransform: "none",
-            boxShadow: "none",
-          },
-          disabled: {
-            color: "#22223B", // fallback if theme not available
-            // Use theme if available
-            // color: theme => theme.palette.text.primary,
-          },
-        },
-      },
     },
   });
 
