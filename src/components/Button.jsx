@@ -3,17 +3,29 @@ import PropTypes from "prop-types";
 import Button from "@mui/material/Button";
 import CircularProgress from "@mui/material/CircularProgress";
 
-const GuildButton = ({ children, loading, disabled, color, sx, ...props }) => (
-  <Button
-    color={color}
-    disabled={disabled || loading}
-    sx={sx}
-    startIcon={loading ? <CircularProgress color="inherit" size={20} /> : null}
-    {...props}
-  >
-    {children}
-  </Button>
-);
+import { useTheme } from "@mui/material/styles";
+
+const GuildButton = ({ children, loading, disabled, color, sx, ...props }) => {
+  const theme = useTheme();
+  return (
+    <Button
+      color={color}
+      disabled={disabled || loading}
+      sx={{
+        ...sx,
+        ...(disabled || loading
+          ? { color: theme.palette.text.primary + " !important" }
+          : {}),
+      }}
+      startIcon={
+        loading ? <CircularProgress color="inherit" size={20} /> : null
+      }
+      {...props}
+    >
+      {children}
+    </Button>
+  );
+};
 
 GuildButton.propTypes = {
   color: PropTypes.string,

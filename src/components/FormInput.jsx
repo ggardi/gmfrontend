@@ -4,25 +4,6 @@ import TextField from "@mui/material/TextField";
 const FormInput = ({ label, error, className = "", ...props }) => {
   const inputRef = useRef(null);
 
-  useEffect(() => {
-    const input = inputRef.current;
-    if (!input) return;
-    const handleFocus = () => {
-      input.style.border = `1px solid ${
-        props?.theme?.palette?.primary?.main || "#1976d2"
-      }`;
-    };
-    const handleBlur = () => {
-      input.style.border = "1px solid #ccc";
-    };
-    input.addEventListener("focus", handleFocus);
-    input.addEventListener("blur", handleBlur);
-    return () => {
-      input.removeEventListener("focus", handleFocus);
-      input.removeEventListener("blur", handleBlur);
-    };
-  }, [props?.theme?.palette?.primary?.main]);
-
   return (
     <TextField
       variant="filled"
@@ -35,7 +16,8 @@ const FormInput = ({ label, error, className = "", ...props }) => {
         input: {
           disableUnderline: true,
           style: {
-            padding: "0 16px",
+            paddingLeft: 12, // match label's left position
+            paddingRight: 12,
             height: 51,
             backgroundColor: "#fff",
           },
@@ -55,11 +37,20 @@ const FormInput = ({ label, error, className = "", ...props }) => {
           backgroundColor: "#fff",
           transition: "border-color 0.2s",
           height: 51,
+          paddingLeft: 12, // ensure input and label align
+          paddingRight: 12,
         },
         "& .MuiFilledInput-root.Mui-focused": {
           border: `1px solid ${
             props?.theme?.palette?.primary?.main || "#1976d2"
           }`,
+        },
+        "& .MuiInputLabel-root": {
+          left: 12, // align label with input text
+          transition: "color 0.2s",
+        },
+        "& .MuiInputLabel-root.Mui-focused": {
+          color: props?.theme?.palette?.primary?.main || "#1976d2",
         },
       }}
       {...props}

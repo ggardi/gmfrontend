@@ -25,6 +25,9 @@ export default function App() {
       action: {
         disabled: "#DFDFDF",
       },
+      text: {
+        primary: "#22223B", // Site-wide text color
+      },
       // add more custom colors or palette options here
     },
     typography: {
@@ -34,6 +37,9 @@ export default function App() {
     components: {
       MuiCssBaseline: {
         styleOverrides: (theme) => ({
+          body: {
+            color: theme.palette.text.primary,
+          },
           a: {
             fontWeight: 400,
             textTransform: "none",
@@ -60,6 +66,11 @@ export default function App() {
             borderRadius: 0,
             textTransform: "none",
             boxShadow: "none",
+          },
+          disabled: {
+            color: "#22223B", // fallback if theme not available
+            // Use theme if available
+            // color: theme => theme.palette.text.primary,
           },
         },
       },
