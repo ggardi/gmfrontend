@@ -1,6 +1,5 @@
 import { render, screen } from "@testing-library/react";
 import AuthStatus from "../AuthStatus";
-import "@testing-library/jest-dom";
 
 jest.mock("@azure/msal-react", () => ({
   useMsal: () => ({

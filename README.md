@@ -10,7 +10,7 @@
 
 ## Project Overview
 
-Guild Front-end is a React application using [Vite](https://vitejs.dev/) for fast development, [Material UI](https://mui.com/) for UI components and theming, and [React Hook Form](https://react-hook-form.com/) with [Yup](https://github.com/jquense/yup) for form validation. Authentication is handled via Azure B2C (MSAL). Testing uses Jest and React Testing Library.
+Guild Front-end is a React application using [Vite](https://vitejs.dev/) for fast development, [Material UI](https://mui.com/) for UI components and theming, and [React Hook Form](https://react-hook-form.com/) with [Yup](https://github.com/jquense/yup) for form validation. Authentication is handled via Azure B2C (MSAL). Testing uses Jest + RTL (React Testing Library) + jsdom for component/unit/integration tests. jsdom provides virtual DOM for component level tests.
 
 ## Project Structure
 
@@ -101,6 +101,19 @@ npm test -- --watch
 
 ### Additional Info
 
-- Test files should be named `*.test.js` or `*.test.jsx` and placed in a `__tests__` folder or next to the component.
-- Custom matchers (like `toBeInTheDocument`) are available via `@testing-library/jest-dom`.
-- For end-to-end tests, consider using [Cypress](https://www.cypress.io/) or [Playwright](https://playwright.dev/).
+### jest-dom Setup: Why We Import Globally
+
+We import `@testing-library/jest-dom` globally in our Jest setup file (`jest.setup.js`) instead of in each test file. This ensures all custom matchers (like `toBeInTheDocument`) are available everywhere, reducing errors and boilerplate.
+
+**Pros:**
+
+- No need to import in every test file (DRY)
+- Reduces risk of missing matchers and related errors
+- Common best practice for React projects
+
+**Cons:**
+
+- Less explicit in individual test files (but documented here)
+- Slightly more “magic” for new contributors
+
+If you prefer explicit imports, you can import `@testing-library/jest-dom` at the top of a test file, but the global setup is recommended for consistency and reliability.

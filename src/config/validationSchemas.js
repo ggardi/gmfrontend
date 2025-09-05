@@ -1,21 +1,22 @@
 import * as yup from "yup";
+import { validationMessages } from "./validationMessages";
 
 export const aboutYouSchema = yup.object().shape({
   firstName: yup
     .string()
-    .required("First name is required")
-    .min(2, "Min 2 characters")
-    .max(20, "Max 20 characters")
-    .matches(/^[a-zA-Z'-]+$/, "Only letters, apostrophes, and hyphens"),
+    .required(validationMessages.firstNameRequired)
+    .min(2, validationMessages.min2)
+    .max(20, validationMessages.max20)
+    .matches(/^[a-zA-Z'-]+$/, validationMessages.onlyLetters),
   lastName: yup
     .string()
-    .required("Last name is required")
-    .min(2, "Min 2 characters")
-    .max(24, "Max 24 characters")
-    .matches(/^[a-zA-Z'-]+$/, "Only letters, apostrophes, and hyphens"),
+    .required(validationMessages.lastNameRequired)
+    .min(2, validationMessages.min2)
+    .max(24, validationMessages.max24)
+    .matches(/^[a-zA-Z'-]+$/, validationMessages.onlyLetters),
   email: yup
     .string()
-    .required("Email is required")
-    .email("Enter a valid email address")
-    .max(40, "Max 40 characters"),
+    .required(validationMessages.emailRequired)
+    .email(validationMessages.emailInvalid)
+    .max(40, validationMessages.max40),
 });
