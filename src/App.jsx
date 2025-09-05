@@ -67,7 +67,13 @@ export default function App() {
       <Container maxWidth="md" sx={{ minHeight: "80vh", py: 4 }}>
         <div id="apply-online">
           <Routes>
+            <Route path="*" element={<AboutYou />} />
             <Route path="/" element={<AboutYou />} />
+            <Route path="/about-you" element={<AboutYou />} />
+            <Route path="/branches" element={<AboutYou />} />
+            <Route path="/branches/:branchId/*" element={<AboutYou />} />
+            <Route path="/officers" element={<AboutYou />} />
+            <Route path="/officers/:officerId/*" element={<AboutYou />} />
             <Route path="/loan-type" element={<LoanType />} />
             <Route path="/property-state" element={<PropertyState />} />
             <Route path="/loan-officer" element={<LoanOfficer />} />

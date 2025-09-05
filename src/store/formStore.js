@@ -9,6 +9,8 @@ export const useFormStore = create((set) => ({
     loanType: "",
     propertyState: "",
     loanOfficer: "",
+    officerId: "",
+    branchId: "",
   },
 
   // Update a field
@@ -30,6 +32,8 @@ export const useFormStore = create((set) => ({
         loanType: "",
         propertyState: "",
         loanOfficer: "",
+        officerId: "",
+        branchId: "",
       },
     })),
 }));

@@ -1,12 +1,20 @@
+import React from "react";
 import Box from "@mui/material/Box";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useMsal } from "@azure/msal-react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { aboutYouSchema } from "../config/validationSchemas";
 import { FormContainer, Button, FormInput, AuthStatus } from "../components";
+import { useFormStore } from "../store/formStore";
 
 export default function AboutYou() {
+  const { officerId, branchId } = useParams();
+  const setParam = useFormStore((state) => state.updateField);
+  React.useEffect(() => {
+    if (officerId) setParam("officerId", officerId);
+    if (branchId) setParam("branchId", branchId);
+  }, [officerId, branchId, setParam]);
   const {
     register,
     handleSubmit,
@@ -35,6 +43,17 @@ export default function AboutYou() {
       >
         <FormContainer>
           <h2>About You</h2>
+          {/* Debug message for branchId or officerId */}
+          {branchId && (
+            <Box sx={{ color: "orange", mb: 2, fontSize: 14 }}>
+              Applying with branchId: <b>{branchId}</b>
+            </Box>
+          )}
+          {officerId && (
+            <Box sx={{ color: "orange", mb: 2, fontSize: 14 }}>
+              Applying with officerId: <b>{officerId}</b>
+            </Box>
+          )}
           <Box
             sx={{
               display: "flex",
