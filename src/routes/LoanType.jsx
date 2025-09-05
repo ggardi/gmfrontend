@@ -1,3 +1,4 @@
+import React from "react";
 import Box from "@mui/material/Box";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -24,36 +25,41 @@ export default function LoanType() {
   return (
     <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
       <Box
-        sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
       >
         <FormContainer>
-          <h2>About You</h2>
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              gap: 2,
-              width: "100%",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          ></Box>
+          <h2>Loan TypeSelect a loan type</h2>
+          {/* ...add your loan type fields here... */}
         </FormContainer>
         <Box
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            width: "100%",
-            mt: 4,
-          }}
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          mt={4}
+          width="100%"
         >
           <Button
-            variant="contained"
-            type="submit"
-            disabled={!isDirty || !isValid}
+            type="button"
+            onClick={() => navigate(-1)}
+            sx={{ minWidth: 110, ml: { xs: 0, sm: 7 } }}
           >
-            Next
+            {"< Back"}
           </Button>
+          <Box flexGrow={1} display="flex" justifyContent="center">
+            <Button
+              variant="contained"
+              type="submit"
+              disabled={!isDirty || !isValid}
+              sx={{ minWidth: 110 }}
+            >
+              Next
+            </Button>
+          </Box>
+          <Box width="75px" /> {/* Adjust width as needed */}
         </Box>
       </Box>
     </form>

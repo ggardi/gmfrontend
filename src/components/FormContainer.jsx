@@ -15,6 +15,10 @@ const FormContainer = ({ children, sx = {}, ...props }) => {
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
+        "& h2": {
+          textAlign: "center",
+          width: "100%",
+        },
         ...sx,
       }}
       {...props}
