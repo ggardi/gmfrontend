@@ -1,12 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
 import Box from "@mui/material/Box";
+import RadioGroup from "@mui/material/RadioGroup";
+import FormControl from "@mui/material/FormControl";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { aboutYouSchema } from "../config/validationSchemas";
-import { FormContainer, Button } from "../components";
+import { FormContainer, Button, IconRadioOption } from "../components";
+import PurchaseIcon from "../assets/PurchaseIcon.svg";
+import RefinanceIcon from "../assets/RefinanceIcon.svg";
 
 export default function LoanType() {
+  const [selectedLoanType, setSelectedLoanType] = useState("");
   const {
     register,
     handleSubmit,
@@ -32,8 +37,44 @@ export default function LoanType() {
         }}
       >
         <FormContainer>
-          <h2>Loan TypeSelect a loan type</h2>
-          {/* ...add your loan type fields here... */}
+          <h2>Select a loan type</h2>
+          <FormControl>
+            <RadioGroup
+              row
+              aria-labelledby="select-loan-type"
+              name="loanType"
+              value={selectedLoanType}
+              onChange={(e) => setSelectedLoanType(e.target.value)}
+            >
+              {[
+                {
+                  value: "purchase",
+                  label: "Purchase",
+                  icon: PurchaseIcon,
+                  imgMb: 1,
+                },
+                {
+                  value: "refinance",
+                  label: "Refinance",
+                  icon: RefinanceIcon,
+                  imgMb: 2,
+                },
+              ].map((option) => (
+                <IconRadioOption
+                  key={option.value}
+                  value={option.value}
+                  label={option.label}
+                  icon={option.icon}
+                  imgMb={option.imgMb}
+                  checked={selectedLoanType === option.value}
+                  onChange={(e) => setSelectedLoanType(e.target.value)}
+                  name="loanType"
+                  sx={{ mx: 2 }}
+                  disableRipple
+                />
+              ))}
+            </RadioGroup>
+          </FormControl>
         </FormContainer>
         <Box
           display="flex"
@@ -53,7 +94,7 @@ export default function LoanType() {
             <Button
               variant="contained"
               type="submit"
-              disabled={!isDirty || !isValid}
+              disabled={!selectedLoanType}
               sx={{ minWidth: 110 }}
             >
               Next

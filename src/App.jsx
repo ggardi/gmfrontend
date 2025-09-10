@@ -14,6 +14,9 @@ import Footer from "./components/Footer";
 export default function App() {
   const theme = createTheme({
     palette: {
+      border: {
+        main: "#000000a1",
+      },
       primary: {
         main: "#262A82", // Guild brand primary color
         contrastText: "#fff",

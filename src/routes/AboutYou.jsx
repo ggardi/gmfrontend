@@ -64,27 +64,35 @@ export default function AboutYou() {
               justifyContent: "center",
             }}
           >
-            <FormInput
-              label="First Name"
-              type="text"
-              placeholder="First name"
-              {...register("firstName")}
-              error={errors.firstName?.message}
-            />
-            <FormInput
-              label="Last Name"
-              type="text"
-              placeholder="Last name"
-              {...register("lastName")}
-              error={errors.lastName?.message}
-            />
-            <FormInput
-              label="Email"
-              type="email"
-              placeholder="Email"
-              {...register("email")}
-              error={errors.email?.message}
-            />
+            {[
+              {
+                name: "firstName",
+                label: "First Name",
+                type: "text",
+                placeholder: "First name",
+              },
+              {
+                name: "lastName",
+                label: "Last Name",
+                type: "text",
+                placeholder: "Last name",
+              },
+              {
+                name: "email",
+                label: "Email",
+                type: "email",
+                placeholder: "Email",
+              },
+            ].map((field) => (
+              <FormInput
+                key={field.name}
+                label={field.label}
+                type={field.type}
+                placeholder={field.placeholder}
+                {...register(field.name)}
+                error={errors[field.name]?.message}
+              />
+            ))}
           </Box>
         </FormContainer>
         <Box
