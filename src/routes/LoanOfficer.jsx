@@ -1,3 +1,4 @@
+import Pagination from "@mui/material/Pagination";
 import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -31,7 +32,12 @@ export default function LoanOfficer() {
   const [officerName, setOfficerName] = useState("");
   const [branchLocation, setBranchLocation] = useState("");
   const [officerResults, setOfficerResults] = useState([]);
+  const [officerTotal, setOfficerTotal] = useState(0);
+  const [officerPage, setOfficerPage] = useState(1);
   const [branchResults, setBranchResults] = useState([]);
+  const [branchTotal, setBranchTotal] = useState(0);
+  const [branchPage, setBranchPage] = useState(1);
+  const pageSize = 5;
   const [lastSearchType, setLastSearchType] = useState(null); // 'officer' or 'branch'
   const updateField = useFormStore((state) => state.updateField);
   const {
@@ -51,28 +57,50 @@ export default function LoanOfficer() {
   useEffect(() => {
     if (officerName.length >= 3) {
       const timeout = setTimeout(() => {
-        setOfficerResults([
-          { id: "officer1", name: `${officerName} Smith` },
-          { id: "officer2", name: `${officerName} Johnson` },
-        ]);
+        // Simulate a large dataset
+        const allResults = Array.from({ length: 23 }, (_, i) => ({
+          id: `officer${i + 1}`,
+          name: `${officerName} Officer ${i + 1}`,
+        }));
+        setOfficerTotal(allResults.length);
+        const start = (officerPage - 1) * pageSize;
+        setOfficerResults(allResults.slice(start, start + pageSize));
       }, 400);
       return () => clearTimeout(timeout);
+    } else {
+      setOfficerResults([]);
+      setOfficerTotal(0);
     }
-    // else { setOfficerResults([]); }
+  }, [officerName, officerPage]);
+
+  // Reset page to 1 when search changes
+  useEffect(() => {
+    setOfficerPage(1);
   }, [officerName]);
 
   // Mock API search for branch
   useEffect(() => {
     if (branchLocation.length >= 3) {
       const timeout = setTimeout(() => {
-        setBranchResults([
-          { id: "branch1", name: `${branchLocation} Main Branch` },
-          { id: "branch2", name: `${branchLocation} West Branch` },
-        ]);
+        // Simulate a large dataset
+        const allResults = Array.from({ length: 17 }, (_, i) => ({
+          id: `branch${i + 1}`,
+          name: `${branchLocation} Branch ${i + 1}`,
+        }));
+        setBranchTotal(allResults.length);
+        const start = (branchPage - 1) * pageSize;
+        setBranchResults(allResults.slice(start, start + pageSize));
       }, 400);
       return () => clearTimeout(timeout);
+    } else {
+      setBranchResults([]);
+      setBranchTotal(0);
     }
-    // else { setBranchResults([]); }
+  }, [branchLocation, branchPage]);
+
+  // Reset page to 1 when search changes
+  useEffect(() => {
+    setBranchPage(1);
   }, [branchLocation]);
   const navigate = useNavigate();
 
@@ -234,44 +262,69 @@ export default function LoanOfficer() {
               </Box>
             ))}
 
-            {/* DRY Search Results: Only show one type at a time */}
             {lastSearchType === "officer" && officerResults.length > 0 && (
-              <SearchResults
-                results={officerResults}
-                selectedId={selectedOfficerId}
-                onSelect={(id, name) => {
-                  setValue("officerId", id, {
-                    shouldDirty: true,
-                    shouldValidate: true,
-                  });
-                  setValue("branchId", "", {
-                    shouldDirty: true,
-                    shouldValidate: true,
-                  });
-                  updateField("officerId", id);
-                  updateField("branchId", "");
-                }}
-                type="officer"
-              />
+              <Box display={"flex"} flexDirection="column" width="100%">
+                <SearchResults
+                  results={officerResults}
+                  selectedId={selectedOfficerId}
+                  onSelect={(id, name) => {
+                    setValue("officerId", id, {
+                      shouldDirty: true,
+                      shouldValidate: true,
+                    });
+                    setValue("branchId", "", {
+                      shouldDirty: true,
+                      shouldValidate: true,
+                    });
+                    updateField("officerId", id);
+                    updateField("branchId", "");
+                  }}
+                  type="officer"
+                />
+                <Pagination
+                  count={Math.ceil(officerTotal / pageSize)}
+                  page={officerPage}
+                  onChange={(_, value) => setOfficerPage(value)}
+                  sx={{ mt: 2, display: "flex", justifyContent: "center" }}
+                  size="small"
+                  color="primary"
+                  showFirstButton
+                  showLastButton
+                  disabled={officerTotal <= pageSize}
+                />
+              </Box>
             )}
             {lastSearchType === "branch" && branchResults.length > 0 && (
-              <SearchResults
-                results={branchResults}
-                selectedId={selectedBranchId}
-                onSelect={(id, name) => {
-                  setValue("branchId", id, {
-                    shouldDirty: true,
-                    shouldValidate: true,
-                  });
-                  setValue("officerId", "", {
-                    shouldDirty: true,
-                    shouldValidate: true,
-                  });
-                  updateField("branchId", id);
-                  updateField("officerId", "");
-                }}
-                type="branch"
-              />
+              <Box display={"flex"} flexDirection="column" width="100%" mt={2}>
+                <SearchResults
+                  results={branchResults}
+                  selectedId={selectedBranchId}
+                  onSelect={(id, name) => {
+                    setValue("branchId", id, {
+                      shouldDirty: true,
+                      shouldValidate: true,
+                    });
+                    setValue("officerId", "", {
+                      shouldDirty: true,
+                      shouldValidate: true,
+                    });
+                    updateField("branchId", id);
+                    updateField("officerId", "");
+                  }}
+                  type="branch"
+                />
+                <Pagination
+                  count={Math.ceil(branchTotal / pageSize)}
+                  page={branchPage}
+                  onChange={(_, value) => setBranchPage(value)}
+                  sx={{ mt: 2, display: "flex", justifyContent: "center" }}
+                  size="small"
+                  color="primary"
+                  showFirstButton
+                  showLastButton
+                  disabled={branchTotal <= pageSize}
+                />
+              </Box>
             )}
           </Box>
         </FormContainer>

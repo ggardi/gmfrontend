@@ -6,6 +6,9 @@ import LoanOfficer from "./routes/LoanOfficer";
 import ReviewSubmit from "./routes/ReviewSubmit";
 import CreatePassword from "./routes/CreatePassword";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
+import { useEffect } from "react";
+import { getAppParams } from "./config/appConfig";
+import { useFormStore } from "./store/formStore";
 import CssBaseline from "@mui/material/CssBaseline";
 import Container from "@mui/material/Container";
 import Header from "./components/Header";
@@ -13,6 +16,15 @@ import Footer from "./components/Footer";
 import DebugFormState from "./components/DebugFormState";
 
 export default function App() {
+  // On app load, parse domain and URL params for officerId/branchId
+  const updateField = useFormStore((state) => state.updateField);
+  useEffect(() => {
+    // Use centralized getAppParams for all param parsing
+    const { domainName, officerId, branchId } = getAppParams();
+    updateField("domainName", domainName);
+    if (officerId) updateField("officerId", officerId);
+    if (branchId) updateField("branchId", branchId);
+  }, [updateField]);
   const theme = createTheme({
     palette: {
       border: {
