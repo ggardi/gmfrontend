@@ -1,7 +1,13 @@
 import React, { useRef, useEffect } from "react";
 import TextField from "@mui/material/TextField";
 
-const FormInput = ({ label, error, className = "", ...props }) => {
+const FormInput = ({
+  label,
+  error,
+  className = "",
+  endAdornment,
+  ...props
+}) => {
   const inputRef = useRef(null);
 
   return (
@@ -23,6 +29,7 @@ const FormInput = ({ label, error, className = "", ...props }) => {
           },
           className,
           ref: inputRef,
+          ...(endAdornment ? { endAdornment } : {}),
         },
       }}
       sx={{

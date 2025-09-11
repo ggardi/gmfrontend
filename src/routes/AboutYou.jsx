@@ -4,7 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useMsal } from "@azure/msal-react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { aboutYouSchema } from "../config/validationSchemas";
+import { aboutYouSchema } from "../config/stepValidationSchemas";
 import { FormContainer, Button, FormInput, AuthStatus } from "../components";
 import { useFormStore } from "../store/formStore";
 
@@ -28,7 +28,10 @@ export default function AboutYou() {
   const isLoggedIn = accounts && accounts.length > 0;
 
   const onSubmit = (data) => {
-    // handle form data, e.g., save to store or proceed
+    // Sync form fields to global store
+    setParam("firstName", data.firstName);
+    setParam("lastName", data.lastName);
+    setParam("email", data.email);
     navigate("/loan-type");
   };
 

@@ -1,29 +1,35 @@
-import React, { useState } from "react";
+import React from "react";
+import { useFormStore } from "../store/formStore";
 import Box from "@mui/material/Box";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControl from "@mui/material/FormControl";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { aboutYouSchema } from "../config/validationSchemas";
+import { loanTypeSchema } from "../config/stepValidationSchemas";
 import { FormContainer, Button, IconRadioOption } from "../components";
 import PurchaseIcon from "../assets/PurchaseIcon.svg";
 import RefinanceIcon from "../assets/RefinanceIcon.svg";
 
 export default function LoanType() {
-  const [selectedLoanType, setSelectedLoanType] = useState("");
+  const setParam = useFormStore((state) => state.updateField);
   const {
     register,
     handleSubmit,
+    setValue,
+    watch,
     formState: { errors, isValid, isDirty },
   } = useForm({
-    resolver: yupResolver(aboutYouSchema),
+    resolver: yupResolver(loanTypeSchema),
     mode: "onTouched",
+    defaultValues: { loanType: "" },
   });
   const navigate = useNavigate();
 
+  const selectedLoanType = watch("loanType");
+
   const onSubmit = (data) => {
-    // handle form data, e.g., save to store or proceed
+    setParam("loanType", data.loanType);
     navigate("/property-state");
   };
 
@@ -44,7 +50,9 @@ export default function LoanType() {
               aria-labelledby="select-loan-type"
               name="loanType"
               value={selectedLoanType}
-              onChange={(e) => setSelectedLoanType(e.target.value)}
+              onChange={(e) =>
+                setValue("loanType", e.target.value, { shouldDirty: true })
+              }
             >
               {[
                 {
@@ -67,10 +75,11 @@ export default function LoanType() {
                   icon={option.icon}
                   imgMb={option.imgMb}
                   checked={selectedLoanType === option.value}
-                  onChange={(e) => setSelectedLoanType(e.target.value)}
+                  onChange={(e) =>
+                    setValue("loanType", e.target.value, { shouldDirty: true })
+                  }
                   name="loanType"
                   sx={{ mx: 2 }}
-                  disableRipple
                 />
               ))}
             </RadioGroup>

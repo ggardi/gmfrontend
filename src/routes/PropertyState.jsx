@@ -6,29 +6,28 @@ import Select from "@mui/material/Select";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { aboutYouSchema } from "../config/validationSchemas";
+import { propertyStateSchema } from "../config/stepValidationSchemas";
 import { FormContainer, Button } from "../components";
-
-import { useState } from "react";
+import { useFormStore } from "../store/formStore";
 
 export default function PropertyState() {
-  const [propertyState, setPropertyState] = useState("");
+  const setParam = useFormStore((state) => state.updateField);
   const {
     register,
     handleSubmit,
     formState: { errors, isValid, isDirty },
+    watch,
   } = useForm({
-    resolver: yupResolver(aboutYouSchema),
+    resolver: yupResolver(propertyStateSchema),
     mode: "onTouched",
+    defaultValues: { propertyState: "" },
   });
   const navigate = useNavigate();
 
-  const handleChange = (event) => {
-    setPropertyState(event.target.value);
-  };
+  const propertyState = watch("propertyState");
 
   const onSubmit = (data) => {
-    // handle form data, e.g., save to store or proceed
+    setParam("propertyState", data.propertyState);
     navigate("/loan-officer");
   };
 
@@ -60,18 +59,26 @@ export default function PropertyState() {
             >
               In what state is the property you're looking to purchase?
             </Box>
-            <FormControl sx={{ m: 1, minWidth: 120 }}>
+            <FormControl
+              sx={{ m: 1, minWidth: 120 }}
+              error={!!errors.propertyState}
+            >
               <Select
                 value={propertyState}
-                onChange={handleChange}
+                onChange={() => {}}
                 displayEmpty
-                inputProps={{ "aria-label": "select state" }}
+                {...register("propertyState")}
               >
                 <MenuItem value=""> State </MenuItem>
                 <MenuItem value={"CA"}>CA</MenuItem>
                 <MenuItem value={"TX"}>TX</MenuItem>
                 <MenuItem value={"CO"}>CO</MenuItem>
               </Select>
+              {errors.propertyState && (
+                <Box sx={{ color: "error.main", fontSize: 13, mt: 1 }}>
+                  {errors.propertyState.message}
+                </Box>
+              )}
             </FormControl>
           </Box>
         </FormContainer>
@@ -93,7 +100,7 @@ export default function PropertyState() {
             <Button
               variant="contained"
               type="submit"
-              disabled={!propertyState}
+              disabled={!isDirty || !isValid}
               sx={{ minWidth: 110 }}
             >
               Next

@@ -10,6 +10,7 @@ import CssBaseline from "@mui/material/CssBaseline";
 import Container from "@mui/material/Container";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+import DebugFormState from "./components/DebugFormState";
 
 export default function App() {
   const theme = createTheme({
@@ -86,6 +87,7 @@ export default function App() {
         </div>
       </Container>
       <Footer />
+      <DebugFormState />
     </ThemeProvider>
   );
 }

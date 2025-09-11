@@ -3,7 +3,7 @@ import Box from "@mui/material/Box";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { aboutYouSchema } from "../config/validationSchemas";
+import { aboutYouSchema } from "../config/stepValidationSchemas";
 import { FormContainer, Button } from "../components";
 
 export default function ReviewSubmit() {

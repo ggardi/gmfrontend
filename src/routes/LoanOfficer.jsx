@@ -1,45 +1,279 @@
-import React from "react";
-import Box from "@mui/material/Box";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { aboutYouSchema } from "../config/validationSchemas";
-import { FormContainer, Button } from "../components";
+import * as yup from "yup";
+import Box from "@mui/material/Box";
+import Radio from "@mui/material/Radio";
+import InputAdornment from "@mui/material/InputAdornment";
+import IconButton from "@mui/material/IconButton";
+import { useNavigate, useParams } from "react-router-dom";
+import { FormContainer, Button, FormInput } from "../components";
+import { useFormStore } from "../store/formStore";
+
+import SearchIcon from "../components/SearchIcon";
+import CloseIcon from "../components/CloseIcon";
+
+// Validation: require either officerId or branchId
+const loanOfficerStepSchema = yup
+  .object()
+  .shape({
+    officerId: yup.string(),
+    branchId: yup.string(),
+  })
+  .test(
+    "one-required",
+    "Please select a loan officer or a branch.",
+    (obj) => !!(obj.officerId || obj.branchId)
+  );
 
 export default function LoanOfficer() {
+  // Local state for search fields
+  const [officerName, setOfficerName] = useState("");
+  const [branchLocation, setBranchLocation] = useState("");
+  const [officerResults, setOfficerResults] = useState([]);
+  const [branchResults, setBranchResults] = useState([]);
+  const [lastSearchType, setLastSearchType] = useState(null); // 'officer' or 'branch'
+  const updateField = useFormStore((state) => state.updateField);
   const {
-    register,
     handleSubmit,
+    setValue,
     formState: { errors, isValid, isDirty },
+    watch,
   } = useForm({
-    resolver: yupResolver(aboutYouSchema),
+    resolver: yupResolver(loanOfficerStepSchema),
     mode: "onTouched",
+    defaultValues: { officerId: "", branchId: "" },
   });
+  const selectedOfficerId = watch("officerId");
+  const selectedBranchId = watch("branchId");
+
+  // Mock API search for officer
+  useEffect(() => {
+    if (officerName.length >= 3) {
+      const timeout = setTimeout(() => {
+        setOfficerResults([
+          { id: "officer1", name: `${officerName} Smith` },
+          { id: "officer2", name: `${officerName} Johnson` },
+        ]);
+      }, 400);
+      return () => clearTimeout(timeout);
+    }
+    // else { setOfficerResults([]); }
+  }, [officerName]);
+
+  // Mock API search for branch
+  useEffect(() => {
+    if (branchLocation.length >= 3) {
+      const timeout = setTimeout(() => {
+        setBranchResults([
+          { id: "branch1", name: `${branchLocation} Main Branch` },
+          { id: "branch2", name: `${branchLocation} West Branch` },
+        ]);
+      }, 400);
+      return () => clearTimeout(timeout);
+    }
+    // else { setBranchResults([]); }
+  }, [branchLocation]);
   const navigate = useNavigate();
 
   const onSubmit = (data) => {
-    // handle form data, e.g., save to store or proceed
-    navigate("/review-submit");
+    // Only allow submit if one is selected (enforced by schema)
+    updateField("officerId", data.officerId || "");
+    updateField("branchId", data.branchId || "");
+    navigate("/loan-type");
   };
+
+  function SearchResults({ results, selectedId, onSelect, type }) {
+    return (
+      <Box
+        sx={{
+          width: "100%",
+          maxWidth: 312,
+          bgcolor: "#f9f9f9",
+          border: "1px solid #eee",
+          borderRadius: 1,
+          mt: 1,
+          mb: 2,
+          p: 1,
+        }}
+      >
+        {results.map((item) => (
+          <Box
+            key={item.id}
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              py: 0.5,
+              px: 1,
+              cursor: "pointer",
+              bgcolor: selectedId === item.id ? "#e0f7fa" : undefined,
+              "&:hover": { bgcolor: "#ececec" },
+            }}
+            onClick={() => onSelect(item.id, item.name)}
+          >
+            <Box sx={{ display: "flex", alignItems: "center" }}>
+              {item.name}{" "}
+              <span style={{ color: "#aaa", fontSize: 12, marginLeft: 6 }}>
+                ({item.id})
+              </span>
+            </Box>
+            <Radio
+              checked={selectedId === item.id}
+              value={item.id}
+              tabIndex={-1}
+              onChange={() => onSelect(item.id, item.name)}
+              sx={{ ml: 2 }}
+            />
+          </Box>
+        ))}
+      </Box>
+    );
+  }
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
       <Box
-        sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
       >
         <FormContainer>
-          <h2>Select your property state</h2>
-          {/* //In what state is the property you're looking to purchase? */}
+          <h2>Select a loan type</h2>
           <Box
             sx={{
               display: "flex",
-              flexDirection: "column",
+              flexDirection: "row",
+              flexWrap: "wrap",
               gap: 2,
               width: "100%",
               alignItems: "center",
               justifyContent: "center",
             }}
-          ></Box>
+          >
+            {[
+              {
+                key: "officer",
+                label: "Search for a loan officer",
+                placeholder: "Search by name",
+                value: officerName,
+                setValueFn: setOfficerName,
+                setResults: setOfficerResults,
+                clearFormState: () => {
+                  setValue("officerId", "", {
+                    shouldDirty: true,
+                    shouldValidate: true,
+                  });
+                  updateField("officerId", "");
+                },
+                otherValue: branchLocation,
+                setLast: () => setLastSearchType("officer"),
+                clearLast: () => setLastSearchType(null),
+                iconTest: !!officerName,
+              },
+              {
+                key: "branch",
+                label: "Search for a branch",
+                placeholder: "Search by location",
+                value: branchLocation,
+                setValueFn: setBranchLocation,
+                setResults: setBranchResults,
+                clearFormState: () => {
+                  setValue("branchId", "", {
+                    shouldDirty: true,
+                    shouldValidate: true,
+                  });
+                  updateField("branchId", "");
+                },
+                otherValue: officerName,
+                setLast: () => setLastSearchType("branch"),
+                clearLast: () => setLastSearchType(null),
+                iconTest: !!branchLocation,
+              },
+            ].map((field) => (
+              <Box key={field.key} sx={{ flex: 1, minWidth: 200 }}>
+                <FormInput
+                  label={field.label}
+                  type="text"
+                  placeholder={field.placeholder}
+                  value={field.value}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    field.setValueFn(value);
+                    if (value) {
+                      field.setLast();
+                    } else if (!field.otherValue) {
+                      field.clearLast();
+                    }
+                  }}
+                  endAdornment={
+                    <InputAdornment position="end">
+                      {field.iconTest ? (
+                        <IconButton
+                          edge="end"
+                          tabIndex={-1}
+                          onClick={() => {
+                            field.setValueFn("");
+                            field.setResults([]);
+                            field.clearFormState();
+                            if (!field.otherValue) field.clearLast();
+                          }}
+                        >
+                          <CloseIcon />
+                        </IconButton>
+                      ) : (
+                        <IconButton edge="end" tabIndex={-1} disabled>
+                          <SearchIcon />
+                        </IconButton>
+                      )}
+                    </InputAdornment>
+                  }
+                />
+              </Box>
+            ))}
+
+            {/* DRY Search Results: Only show one type at a time */}
+            {lastSearchType === "officer" && officerResults.length > 0 && (
+              <SearchResults
+                results={officerResults}
+                selectedId={selectedOfficerId}
+                onSelect={(id, name) => {
+                  setValue("officerId", id, {
+                    shouldDirty: true,
+                    shouldValidate: true,
+                  });
+                  setValue("branchId", "", {
+                    shouldDirty: true,
+                    shouldValidate: true,
+                  });
+                  updateField("officerId", id);
+                  updateField("branchId", "");
+                }}
+                type="officer"
+              />
+            )}
+            {lastSearchType === "branch" && branchResults.length > 0 && (
+              <SearchResults
+                results={branchResults}
+                selectedId={selectedBranchId}
+                onSelect={(id, name) => {
+                  setValue("branchId", id, {
+                    shouldDirty: true,
+                    shouldValidate: true,
+                  });
+                  setValue("officerId", "", {
+                    shouldDirty: true,
+                    shouldValidate: true,
+                  });
+                  updateField("branchId", id);
+                  updateField("officerId", "");
+                }}
+                type="branch"
+              />
+            )}
+          </Box>
         </FormContainer>
         <Box
           sx={{
@@ -56,6 +290,11 @@ export default function LoanOfficer() {
           >
             Next
           </Button>
+          {errors && errors["one-required"] && (
+            <Box sx={{ color: "red", mt: 1, fontSize: 14 }}>
+              {errors["one-required"].message}
+            </Box>
+          )}
         </Box>
       </Box>
     </form>
