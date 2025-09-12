@@ -2,5 +2,5 @@
   "ENVIRONMENT": "staging",
   "API_URL": "https://staging.api.example.com",
   "ANALYTICS_KEY": "staging-analytics-key",
-  "LOGOPATH": "https://staging-cdn.guildmortgage.com/logos/"
+  "LOGOPATH": "https://myaccount.guildmortgage.com/lib/uploads/branches/logos/"
 }

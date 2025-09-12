@@ -12,6 +12,7 @@ export const useFormStore = create((set) => ({
     officerId: "",
     branchId: "",
     domainName: "",
+    radius: "", // Not required, but tracked
   },
 
   // Update a field
@@ -36,6 +37,7 @@ export const useFormStore = create((set) => ({
         officerId: "",
         branchId: "",
         domainName: "",
+        radius: "",
       },
     })),
 }));

@@ -2,5 +2,5 @@
   "ENVIRONMENT": "dev",
   "API_URL": "https://dev.api.example.com",
   "ANALYTICS_KEY": "dev-analytics-key",
-  "LOGOPATH": "https://dev-cdn.guildmortgage.com/logos/"
+  "LOGOPATH": "https://myaccount.guildmortgage.com/lib/uploads/branches/logos/"
 }

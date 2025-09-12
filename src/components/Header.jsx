@@ -5,13 +5,11 @@ import Toolbar from "@mui/material/Toolbar";
 
 import Box from "@mui/material/Box";
 import { useFormStore } from "../store/formStore";
-import { getDomainConfig } from "../config/appConfig";
 
 const DEFAULT_LOGO = defaultLogo;
 
-const Header = () => {
+const Header = ({ domainConfig }) => {
   const domainName = useFormStore((state) => state.formData.domainName);
-  const domainConfig = getDomainConfig();
   const [logoSrc, setLogoSrc] = useState(domainConfig.logoUrl || DEFAULT_LOGO);
   const logoAlt = domainName ? `${domainName} Logo` : "Site Logo";
   const logoLink = domainConfig.headerLogoLink;

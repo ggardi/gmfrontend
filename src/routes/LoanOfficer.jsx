@@ -10,6 +10,8 @@ import IconButton from "@mui/material/IconButton";
 import { useNavigate } from "react-router-dom";
 import { FormContainer, Button, FormInput } from "../components";
 import { useFormStore } from "../store/formStore";
+import RadiusDropdown from "../components/RadiusDropdown";
+import { FormControl, InputLabel } from "@mui/material";
 
 import SearchIcon from "../components/SearchIcon";
 import CloseIcon from "../components/CloseIcon";
@@ -40,6 +42,7 @@ export default function LoanOfficer() {
   const pageSize = 5;
   const [lastSearchType, setLastSearchType] = useState(null); // 'officer' or 'branch'
   const updateField = useFormStore((state) => state.updateField);
+  const radiusValue = useFormStore((state) => state.formData.radius);
   const {
     handleSubmit,
     setValue,
@@ -200,7 +203,7 @@ export default function LoanOfficer() {
         }}
       >
         <FormContainer>
-          <h2>Select a loan type</h2>
+          <h2>Select a loan officer</h2>
           <Box
             sx={{
               display: "flex",
@@ -215,8 +218,8 @@ export default function LoanOfficer() {
             {[
               {
                 key: "officer",
+                placeholder: "Search by name ",
                 label: "Search for a loan officer",
-                placeholder: "Search by name",
                 value: officerName,
                 setValueFn: setOfficerName,
                 setResults: setOfficerResults,
@@ -252,11 +255,11 @@ export default function LoanOfficer() {
                 iconTest: !!branchLocation,
               },
             ].map((field) => (
-              <Box key={field.key} sx={{ flex: 1, minWidth: 200 }}>
+              <Box key={field.key}>
+                <h3>{field.label}</h3>
                 <FormInput
-                  label={field.label}
+                  label={field.placeholder}
                   type="text"
-                  placeholder={field.placeholder}
                   value={field.value}
                   onChange={(e) => {
                     const value = e.target.value;
@@ -292,51 +295,77 @@ export default function LoanOfficer() {
                 />
               </Box>
             ))}
-            <SearchResults
-              show={lastSearchType === "officer" && officerResults.length > 0}
-              results={officerResults}
-              selectedId={selectedOfficerId}
-              onSelect={(id, name) => {
-                setValue("officerId", id, {
-                  shouldDirty: true,
-                  shouldValidate: true,
-                });
-                setValue("branchId", "", {
-                  shouldDirty: true,
-                  shouldValidate: true,
-                });
-                updateField("officerId", id);
-                updateField("branchId", "");
-              }}
-              type="officer"
-              total={officerTotal}
-              page={officerPage}
-              setPage={setOfficerPage}
-              pageSize={pageSize}
-            />
-            <SearchResults
-              show={lastSearchType === "branch" && branchResults.length > 0}
-              results={branchResults}
-              selectedId={selectedBranchId}
-              onSelect={(id, name) => {
-                setValue("branchId", id, {
-                  shouldDirty: true,
-                  shouldValidate: true,
-                });
-                setValue("officerId", "", {
-                  shouldDirty: true,
-                  shouldValidate: true,
-                });
-                updateField("branchId", id);
-                updateField("officerId", "");
-              }}
-              type="branch"
-              total={branchTotal}
-              page={branchPage}
-              setPage={setBranchPage}
-              pageSize={pageSize}
-            />
+            <Box>
+              <FormControl sx={{ m: 1, minWidth: 60 }} fullWidth>
+                <InputLabel shrink htmlFor="radius-dropdown">
+                  Distance
+                </InputLabel>
+                <RadiusDropdown
+                  value={radiusValue}
+                  onChange={(e) => {
+                    setValue("radius", e.target.value, {
+                      shouldDirty: true,
+                      shouldValidate: true,
+                    });
+                    updateField("radius", e.target.value);
+                  }}
+                  selectProps={{
+                    id: "radius-dropdown",
+                    error: !!errors.radiusValue,
+                  }}
+                />
+                {errors.radiusValue && (
+                  <Box sx={{ color: "error.main", fontSize: 13, mt: 1 }}>
+                    {errors.radiusValue.message}
+                  </Box>
+                )}
+              </FormControl>
+            </Box>
           </Box>
+          <SearchResults
+            show={lastSearchType === "officer" && officerResults.length > 0}
+            results={officerResults}
+            selectedId={selectedOfficerId}
+            onSelect={(id, name) => {
+              setValue("officerId", id, {
+                shouldDirty: true,
+                shouldValidate: true,
+              });
+              setValue("branchId", "", {
+                shouldDirty: true,
+                shouldValidate: true,
+              });
+              updateField("officerId", id);
+              updateField("branchId", "");
+            }}
+            type="officer"
+            total={officerTotal}
+            page={officerPage}
+            setPage={setOfficerPage}
+            pageSize={pageSize}
+          />
+          <SearchResults
+            show={lastSearchType === "branch" && branchResults.length > 0}
+            results={branchResults}
+            selectedId={selectedBranchId}
+            onSelect={(id, name) => {
+              setValue("branchId", id, {
+                shouldDirty: true,
+                shouldValidate: true,
+              });
+              setValue("officerId", "", {
+                shouldDirty: true,
+                shouldValidate: true,
+              });
+              updateField("branchId", id);
+              updateField("officerId", "");
+            }}
+            type="branch"
+            total={branchTotal}
+            page={branchPage}
+            setPage={setBranchPage}
+            pageSize={pageSize}
+          />
         </FormContainer>
         <Box
           sx={{

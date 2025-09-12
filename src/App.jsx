@@ -8,7 +8,7 @@ import CreatePassword from "./routes/CreatePassword";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { useEffect, useState } from "react";
 import { loadConfig } from "./utils/configLoader";
-import { getAppParams } from "./config/appConfig";
+import { getAppParams, getDomainConfig } from "./config/appConfig";
 import { useFormStore } from "./store/formStore";
 import CssBaseline from "@mui/material/CssBaseline";
 import Container from "@mui/material/Container";
@@ -88,6 +88,10 @@ export default function App() {
           h2: {
             color: theme.palette.primary.main,
           },
+          h3: {
+            color: theme.palette.primary.main,
+            fontSize: "1rem",
+          },
         }),
       },
     },
@@ -103,10 +107,12 @@ export default function App() {
   if (!configLoaded) {
     return <div style={{ padding: 32 }}>Loading configuration...</div>;
   }
+  // Compute domainConfig only after config is loaded
+  const domainConfig = getDomainConfig();
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Header />
+      <Header domainConfig={domainConfig} />
       <Container maxWidth="md" sx={{ minHeight: "80vh", py: 4 }}>
         <div id="apply-online">
           <Routes>

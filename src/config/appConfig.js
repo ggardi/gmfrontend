@@ -29,7 +29,6 @@ export function getDomainConfig() {
     cfg.LOGOPATH ||
     "https://myaccount.guildmortgage.com/lib/uploads/branches/logos/";
   let hostname = window.location.hostname;
-  // Use ENVIRONMENT from config to determine isLocal
   const isLocal = cfg.ENVIRONMENT === "local";
   const params = new URLSearchParams(window.location.search);
   if (isLocal && params.get("domain")) {
@@ -44,6 +43,7 @@ export function getDomainConfig() {
     // fallback to local asset if no logoName
     logoUrl = "/assets/img/guild-logo.svg";
   }
+  console.log("Domain config for", hostname, params, ":", config);
   return {
     ...config,
     logoUrl,
@@ -69,11 +69,3 @@ export function getAppParams() {
     branchId: branchMatch ? branchMatch[1] : undefined,
   };
 }
-
-const appConfig = {
-  headerLogo:
-    "https://static-dev.guildmortgage.com/static/img/guild-logo-white-2.svg",
-  headerLogoLink: "https://www.guildmortgage.com/",
-};
-
-export default appConfig;

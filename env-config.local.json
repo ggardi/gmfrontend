@@ -2,5 +2,5 @@
   "ENVIRONMENT": "local",
   "API_URL": "http://localhost:3000/api",
   "ANALYTICS_KEY": "local-analytics-key",
-  "LOGOPATH": "http://localhost:3000/assets/img/"
+  "LOGOPATH": "https://myaccount.guildmortgage.com/lib/uploads/branches/logos/"
 }
