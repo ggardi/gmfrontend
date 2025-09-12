@@ -7,7 +7,7 @@ import Box from "@mui/material/Box";
 import Radio from "@mui/material/Radio";
 import InputAdornment from "@mui/material/InputAdornment";
 import IconButton from "@mui/material/IconButton";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { FormContainer, Button, FormInput } from "../components";
 import { useFormStore } from "../store/formStore";
 
@@ -111,54 +111,85 @@ export default function LoanOfficer() {
     navigate("/loan-type");
   };
 
-  function SearchResults({ results, selectedId, onSelect, type }) {
+  // Combined SearchResults: handles both results and pagination
+  function SearchResults({
+    show,
+    results,
+    selectedId,
+    onSelect,
+    type,
+    total,
+    page,
+    setPage,
+    pageSize,
+  }) {
+    if (!show) return null;
     return (
       <Box
-        sx={{
-          width: "100%",
-          maxWidth: 312,
-          bgcolor: "#f9f9f9",
-          border: "1px solid #eee",
-          borderRadius: 1,
-          mt: 1,
-          mb: 2,
-          p: 1,
-        }}
+        display={"flex"}
+        flexDirection="column"
+        width="100%"
+        mt={type === "branch" ? 2 : undefined}
       >
-        {results.map((item) => (
-          <Box
-            key={item.id}
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              py: 0.5,
-              px: 1,
-              cursor: "pointer",
-              bgcolor: selectedId === item.id ? "#e0f7fa" : undefined,
-              "&:hover": { bgcolor: "#ececec" },
-            }}
-            onClick={() => onSelect(item.id, item.name)}
-          >
-            <Box sx={{ display: "flex", alignItems: "center" }}>
-              {item.name}{" "}
-              <span style={{ color: "#aaa", fontSize: 12, marginLeft: 6 }}>
-                ({item.id})
-              </span>
+        <Box
+          sx={{
+            width: "100%",
+            bgcolor: "#f9f9f9",
+            border: "1px solid #eee",
+            borderRadius: 1,
+            mt: 1,
+            mb: 2,
+            p: 1,
+          }}
+        >
+          {results.map((item) => (
+            <Box
+              key={item.id}
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                py: 0.5,
+                px: 1,
+                cursor: "pointer",
+                bgcolor: selectedId === item.id ? "#e0f7fa" : undefined,
+                "&:hover": { bgcolor: "#ececec" },
+              }}
+              onClick={() => onSelect(item.id, item.name)}
+            >
+              <Box sx={{ display: "flex", alignItems: "center" }}>
+                <img src="" />
+                {item.name}{" "}
+                <span style={{ color: "#aaa", fontSize: 12, marginLeft: 6 }}>
+                  ({item.id})
+                </span>
+              </Box>
+              <Box sx={{ display: "flex", alignItems: "center" }}>
+                <Radio
+                  checked={selectedId === item.id}
+                  value={item.id}
+                  tabIndex={-1}
+                  onChange={() => onSelect(item.id, item.name)}
+                  sx={{ ml: 2 }}
+                />
+              </Box>
             </Box>
-            <Radio
-              checked={selectedId === item.id}
-              value={item.id}
-              tabIndex={-1}
-              onChange={() => onSelect(item.id, item.name)}
-              sx={{ ml: 2 }}
-            />
-          </Box>
-        ))}
+          ))}
+        </Box>
+        <Pagination
+          count={Math.ceil(total / pageSize)}
+          page={page}
+          onChange={(_, value) => setPage(value)}
+          sx={{ mt: 2, display: "flex", justifyContent: "center" }}
+          size="small"
+          color="primary"
+          showFirstButton
+          showLastButton
+          disabled={total <= pageSize}
+        />
       </Box>
     );
   }
-
   return (
     <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
       <Box
@@ -261,71 +292,50 @@ export default function LoanOfficer() {
                 />
               </Box>
             ))}
-
-            {lastSearchType === "officer" && officerResults.length > 0 && (
-              <Box display={"flex"} flexDirection="column" width="100%">
-                <SearchResults
-                  results={officerResults}
-                  selectedId={selectedOfficerId}
-                  onSelect={(id, name) => {
-                    setValue("officerId", id, {
-                      shouldDirty: true,
-                      shouldValidate: true,
-                    });
-                    setValue("branchId", "", {
-                      shouldDirty: true,
-                      shouldValidate: true,
-                    });
-                    updateField("officerId", id);
-                    updateField("branchId", "");
-                  }}
-                  type="officer"
-                />
-                <Pagination
-                  count={Math.ceil(officerTotal / pageSize)}
-                  page={officerPage}
-                  onChange={(_, value) => setOfficerPage(value)}
-                  sx={{ mt: 2, display: "flex", justifyContent: "center" }}
-                  size="small"
-                  color="primary"
-                  showFirstButton
-                  showLastButton
-                  disabled={officerTotal <= pageSize}
-                />
-              </Box>
-            )}
-            {lastSearchType === "branch" && branchResults.length > 0 && (
-              <Box display={"flex"} flexDirection="column" width="100%" mt={2}>
-                <SearchResults
-                  results={branchResults}
-                  selectedId={selectedBranchId}
-                  onSelect={(id, name) => {
-                    setValue("branchId", id, {
-                      shouldDirty: true,
-                      shouldValidate: true,
-                    });
-                    setValue("officerId", "", {
-                      shouldDirty: true,
-                      shouldValidate: true,
-                    });
-                    updateField("branchId", id);
-                    updateField("officerId", "");
-                  }}
-                  type="branch"
-                />
-                <Pagination
-                  count={Math.ceil(branchTotal / pageSize)}
-                  page={branchPage}
-                  onChange={(_, value) => setBranchPage(value)}
-                  sx={{ mt: 2, display: "flex", justifyContent: "center" }}
-                  size="small"
-                  color="primary"
-                  showFirstButton
-                  showLastButton
-                  disabled={branchTotal <= pageSize}
-                />
-              </Box>
-            )}
+            <SearchResults
+              show={lastSearchType === "officer" && officerResults.length > 0}
+              results={officerResults}
+              selectedId={selectedOfficerId}
+              onSelect={(id, name) => {
+                setValue("officerId", id, {
+                  shouldDirty: true,
+                  shouldValidate: true,
+                });
+                setValue("branchId", "", {
+                  shouldDirty: true,
+                  shouldValidate: true,
+                });
+                updateField("officerId", id);
+                updateField("branchId", "");
+              }}
+              type="officer"
+              total={officerTotal}
+              page={officerPage}
+              setPage={setOfficerPage}
+              pageSize={pageSize}
+            />
+            <SearchResults
+              show={lastSearchType === "branch" && branchResults.length > 0}
+              results={branchResults}
+              selectedId={selectedBranchId}
+              onSelect={(id, name) => {
+                setValue("branchId", id, {
+                  shouldDirty: true,
+                  shouldValidate: true,
+                });
+                setValue("officerId", "", {
+                  shouldDirty: true,
+                  shouldValidate: true,
+                });
+                updateField("branchId", id);
+                updateField("officerId", "");
+              }}
+              type="branch"
+              total={branchTotal}
+              page={branchPage}
+              setPage={setBranchPage}
+              pageSize={pageSize}
+            />
           </Box>
         </FormContainer>
         <Box

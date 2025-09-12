@@ -6,7 +6,8 @@ import LoanOfficer from "./routes/LoanOfficer";
 import ReviewSubmit from "./routes/ReviewSubmit";
 import CreatePassword from "./routes/CreatePassword";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { loadConfig } from "./utils/configLoader";
 import { getAppParams } from "./config/appConfig";
 import { useFormStore } from "./store/formStore";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -16,15 +17,31 @@ import Footer from "./components/Footer";
 import DebugFormState from "./components/DebugFormState";
 
 export default function App() {
+  // Load runtime config before rendering app
+  const [configLoaded, setConfigLoaded] = useState(false);
+  const [configError, setConfigError] = useState(null);
+  useEffect(() => {
+    loadConfig()
+      .then((cfg) => {
+        // Optionally: make config available via context or global state
+        // For now, just log it
+        console.log("Loaded runtime config:", cfg);
+        setConfigLoaded(true);
+      })
+      .catch((err) => {
+        setConfigError(err.message);
+      });
+  }, []);
   // On app load, parse domain and URL params for officerId/branchId
   const updateField = useFormStore((state) => state.updateField);
   useEffect(() => {
+    if (!configLoaded) return;
     // Use centralized getAppParams for all param parsing
     const { domainName, officerId, branchId } = getAppParams();
     updateField("domainName", domainName);
     if (officerId) updateField("officerId", officerId);
     if (branchId) updateField("branchId", branchId);
-  }, [updateField]);
+  }, [updateField, configLoaded]);
   const theme = createTheme({
     palette: {
       border: {
@@ -76,6 +93,16 @@ export default function App() {
     },
   });
 
+  if (configError) {
+    return (
+      <div style={{ padding: 32, color: "red" }}>
+        Error loading config: {configError}
+      </div>
+    );
+  }
+  if (!configLoaded) {
+    return <div style={{ padding: 32 }}>Loading configuration...</div>;
+  }
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />

@@ -12,6 +12,36 @@
 
 Guild Front-end is a React application using [Vite](https://vitejs.dev/) for fast development, [Material UI](https://mui.com/) for UI components and theming, and [React Hook Form](https://react-hook-form.com/) with [Yup](https://github.com/jquense/yup) for form validation. Authentication is handled via Azure B2C (MSAL). Testing uses Jest + RTL (React Testing Library) + jsdom for component/unit/integration tests. jsdom provides virtual DOM for component level tests.
 
+## Runtime Environment Configuration
+
+This app supports environment-specific configuration (local, dev, staging, production) at runtime, without requiring a rebuild or recompile. This is achieved using a JSON config file loaded at app startup.
+
+### How it works
+
+1. **Config file:** The app loads `public/env-config.json` at runtime. This file contains environment variables such as API URLs, analytics keys, and the environment name.
+2. **No rebuild required:** To change environment settings, simply update or replace `env-config.json` in the `public/` folder and redeploy the static file. No code changes or rebuild are needed.
+3. **Access in code:** The config is loaded before the app renders. You can access it using the `getConfig()` function from `src/utils/configLoader.js`.
+
+### Example `env-config.json`
+
+```
+{
+   "ENVIRONMENT": "production",
+   "API_URL": "https://api.example.com",
+   "ANALYTICS_KEY": "prod-analytics-key"
+}
+```
+
+### Per-environment deployment
+
+- **Local/dev:** Use a local `env-config.json` with local API endpoints.
+- **Staging/production:** Replace `env-config.json` with the appropriate values for each environment during deployment.
+- **CI/CD:** Your deployment pipeline can copy the correct `env-config.json` to the `public/` folder as the last step before serving the app.
+
+**Important:** Do not store secrets, API keys, or any sensitive information in `env-config.json`. This file is publicly accessible and should only contain non-sensitive configuration values needed by the frontend at runtime.
+
+---
+
 ## Project Structure
 
 ```
@@ -117,3 +147,37 @@ We import `@testing-library/jest-dom` globally in our Jest setup file (`jest.set
 - Slightly more “magic” for new contributors
 
 If you prefer explicit imports, you can import `@testing-library/jest-dom` at the top of a test file, but the global setup is recommended for consistency and reliability.
+
+---
+
+## Testing Domain-Based Branding & Logo on Localhost
+
+You can test how the app loads different branding (logo, footer, etc.) for each domain using the `?domain=` query parameter when running locally. This is useful for verifying partner or JV branding without deploying to a real domain.
+
+### How to Test Branding on Localhost
+
+1. **Start the dev server:**
+   ```
+   npm run dev
+   ```
+2. **Open your browser to:**
+
+   ```
+   http://localhost:5173/?domain=viewmortgage.com
+   ```
+
+   Replace `viewmortgage.com` with any supported domain from `src/config/appConfig.js` (e.g., `guildmortgage.com`, `viewmortgage.com`, etc.).
+
+3. **Expected behavior:**
+   - The app will use the logo, footer, and other config for the specified domain.
+   - If the logo for a domain is missing or fails to load, the app will automatically fall back to the default Guild logo.
+
+#### Logo Fallback Logic
+
+- The app checks if the logo URL for the selected domain loads successfully.
+- If the logo is missing or fails to load, the default logo (`src/assets/img/guild-logo.svg`) is used automatically.
+
+#### Adding/Testing New Domains
+
+- To add a new domain or logo, update the `domainConfigs` object in `src/config/appConfig.js`.
+- Place new logo files in the appropriate location (see config for remote or local asset usage).

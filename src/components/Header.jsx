@@ -46,7 +46,7 @@ const Header = () => {
               src={logoSrc}
               alt={logoAlt}
               sx={{
-                width: 94,
+                width: 126,
                 height: "auto",
                 display: "block",
                 margin: "23px 0",

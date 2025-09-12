@@ -21,11 +21,16 @@ const domainConfigs = {
   },
 };
 
+import { getConfig } from "../utils/configLoader";
+
 export function getDomainConfig() {
-  const LOGPATH =
+  const cfg = getConfig();
+  const LOGOPATH =
+    cfg.LOGOPATH ||
     "https://myaccount.guildmortgage.com/lib/uploads/branches/logos/";
   let hostname = window.location.hostname;
-  const isLocal = hostname === "localhost" || hostname === "127.0.0.1";
+  // Use ENVIRONMENT from config to determine isLocal
+  const isLocal = cfg.ENVIRONMENT === "local";
   const params = new URLSearchParams(window.location.search);
   if (isLocal && params.get("domain")) {
     hostname = params.get("domain");
@@ -34,7 +39,7 @@ export function getDomainConfig() {
   const config = domainConfigs[hostname] || domainConfigs["guildmortgage.com"];
   let logoUrl;
   if (config.logoName) {
-    logoUrl = `${LOGPATH}${config.logoName}`;
+    logoUrl = `${LOGOPATH}${config.logoName}`;
   } else {
     // fallback to local asset if no logoName
     logoUrl = "/assets/img/guild-logo.svg";
@@ -48,9 +53,10 @@ export function getDomainConfig() {
 }
 
 export function getAppParams() {
+  const cfg = getConfig();
   let domainName = window.location.hostname;
   const params = new URLSearchParams(window.location.search);
-  const isLocal = domainName === "localhost" || domainName === "127.0.0.1";
+  const isLocal = cfg.ENVIRONMENT === "local";
   if (isLocal && params.get("domain")) {
     domainName = params.get("domain");
   }

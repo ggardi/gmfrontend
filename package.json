@@ -7,8 +7,14 @@
   },
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
+    "copy-env:local": "node scripts/copy-env-config.js local",
+    "copy-env:dev": "node scripts/copy-env-config.js dev",
+    "copy-env:staging": "node scripts/copy-env-config.js staging",
+    "copy-env:prod": "node scripts/copy-env-config.js prod",
+    "dev": "npm run copy-env:local && vite",
+    "build:dev": "npm run copy-env:dev && vite build",
+    "build:staging": "npm run copy-env:staging && vite build",
+    "build:prod": "npm run copy-env:prod && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "jest"
