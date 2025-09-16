@@ -5,13 +5,10 @@ import PropertyState from "./routes/PropertyState";
 import LoanOfficer from "./routes/LoanOfficer";
 import ReviewSubmit from "./routes/ReviewSubmit";
 import CreatePassword from "./routes/CreatePassword";
-import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { useEffect, useState } from "react";
 import { loadConfig } from "./utils/configLoader";
 import { getAppParams, getDomainConfig } from "./config/appConfig";
 import { useFormStore } from "./store/formStore";
-import CssBaseline from "@mui/material/CssBaseline";
-import Container from "@mui/material/Container";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import DebugFormState from "./components/DebugFormState";
@@ -32,70 +29,14 @@ export default function App() {
         setConfigError(err.message);
       });
   }, []);
-  // On app load, parse domain and URL params for officerId/branchId
   const updateField = useFormStore((state) => state.updateField);
   useEffect(() => {
     if (!configLoaded) return;
-    // Use centralized getAppParams for all param parsing
     const { domainName, officerId, branchId } = getAppParams();
     updateField("domainName", domainName);
     if (officerId) updateField("officerId", officerId);
     if (branchId) updateField("branchId", branchId);
   }, [updateField, configLoaded]);
-  const theme = createTheme({
-    palette: {
-      border: {
-        main: "#000000a1",
-      },
-      primary: {
-        main: "#262A82", // Guild brand primary color
-        contrastText: "#fff",
-      },
-      secondary: {
-        main: "#f3c300", // Guild brand secondary color
-        contrastText: "#262A82",
-      },
-      action: {
-        disabled: "#DFDFDF",
-      },
-      text: {
-        primary: "#22223B", // Site-wide text color
-      },
-      // add more custom colors or palette options here
-    },
-    typography: {
-      fontFamily:
-        "'GuildCircularWeb', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
-    },
-    components: {
-      MuiCssBaseline: {
-        styleOverrides: (theme) => ({
-          body: {
-            color: theme.palette.text.primary,
-          },
-          a: {
-            fontWeight: 400,
-            textTransform: "none",
-            letterSpacing: "0.4px",
-            color: "#0000f0",
-            fontSize: "12px",
-            textDecoration: "none",
-            transition: "color 0.2s",
-          },
-          "a:hover, a:focus": {
-            textDecoration: "underline",
-          },
-          h2: {
-            color: theme.palette.primary.main,
-          },
-          h3: {
-            color: theme.palette.primary.main,
-            fontSize: "1rem",
-          },
-        }),
-      },
-    },
-  });
 
   if (configError) {
     return (
@@ -107,32 +48,28 @@ export default function App() {
   if (!configLoaded) {
     return <div style={{ padding: 32 }}>Loading configuration...</div>;
   }
-  // Compute domainConfig only after config is loaded
   const domainConfig = getDomainConfig();
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
+    <div className="flex flex-col min-h-screen">
       <Header domainConfig={domainConfig} />
-      <Container maxWidth="md" sx={{ minHeight: "80vh", py: 4 }}>
-        <div id="apply-online">
-          <Routes>
-            <Route path="*" element={<AboutYou />} />
-            <Route path="/" element={<AboutYou />} />
-            <Route path="/about-you" element={<AboutYou />} />
-            <Route path="/branches" element={<AboutYou />} />
-            <Route path="/branches/:branchId/*" element={<AboutYou />} />
-            <Route path="/officers" element={<AboutYou />} />
-            <Route path="/officers/:officerId/*" element={<AboutYou />} />
-            <Route path="/loan-type" element={<LoanType />} />
-            <Route path="/property-state" element={<PropertyState />} />
-            <Route path="/loan-officer" element={<LoanOfficer />} />
-            <Route path="/review-submit" element={<ReviewSubmit />} />
-            <Route path="/create-password" element={<CreatePassword />} />
-          </Routes>
-        </div>
-      </Container>
-      <Footer />
+      <main id="apply-online" className="flex-grow mt-6 mb-6">
+        <Routes>
+          <Route path="*" element={<AboutYou />} />
+          <Route path="/" element={<AboutYou />} />
+          <Route path="/about-you" element={<AboutYou />} />
+          <Route path="/branches" element={<AboutYou />} />
+          <Route path="/branches/:branchId/*" element={<AboutYou />} />
+          <Route path="/officers" element={<AboutYou />} />
+          <Route path="/officers/:officerId/*" element={<AboutYou />} />
+          <Route path="/loan-type" element={<LoanType />} />
+          <Route path="/property-state" element={<PropertyState />} />
+          <Route path="/loan-officer" element={<LoanOfficer />} />
+          <Route path="/review-submit" element={<ReviewSubmit />} />
+          <Route path="/create-password" element={<CreatePassword />} />
+        </Routes>
+      </main>
+      <Footer domainConfig={domainConfig} />
       <DebugFormState />
-    </ThemeProvider>
+    </div>
   );
 }

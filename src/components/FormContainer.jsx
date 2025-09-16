@@ -1,30 +1,25 @@
-import Box from "@mui/material/Box";
-import { useTheme } from "@mui/material/styles";
+import React from "react";
 
-const FormContainer = ({ children, sx = {}, ...props }) => {
-  const theme = useTheme();
+// FormContainer with grouped Tailwind classes for readability
+const FormContainer = ({ children, className = "", ...props }) => {
+  const containerClasses = [
+    // Layout & size
+    "bg-gray-50 border-b-16 max-w-[686px] w-full min-h-[404px]",
+    // Flexbox
+    "flex flex-col items-center",
+    // Padding (responsive)
+    "px-2 sm:px-4 md:px-8 py-4 sm:py-6 md:py-8",
+    className,
+  ].join(" ");
+
   return (
-    <Box
-      sx={{
-        bgcolor: theme.palette.grey[50],
-        borderBottom: `16px solid ${theme.palette.primary.main}`,
-        px: 4,
-        py: 4,
-        width: 686,
-        minHeight: 404,
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        "& h2": {
-          textAlign: "center",
-          width: "100%",
-        },
-        ...sx,
-      }}
+    <div
+      className={containerClasses}
+      style={{ borderColor: "var(--color-primary)" }}
       {...props}
     >
       {children}
-    </Box>
+    </div>
   );
 };
 

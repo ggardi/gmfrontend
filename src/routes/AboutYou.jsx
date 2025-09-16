@@ -41,32 +41,10 @@ export default function AboutYou() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
-      <Box
-        sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}
-      >
+      <div className="flex flex-col items-center justify-center w-full">
         <FormContainer>
           <h2>About You</h2>
-          {/* Debug message for branchId or officerId */}
-          {branchId && (
-            <Box sx={{ color: "orange", mb: 2, fontSize: 14 }}>
-              Applying with branchId: <b>{branchId}</b>
-            </Box>
-          )}
-          {officerId && (
-            <Box sx={{ color: "orange", mb: 2, fontSize: 14 }}>
-              Applying with officerId: <b>{officerId}</b>
-            </Box>
-          )}
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              gap: 2,
-              width: "100%",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
+          <div className="flex flex-col gap-6 w-full items-center justify-center p-10">
             {[
               {
                 name: "firstName",
@@ -91,21 +69,14 @@ export default function AboutYou() {
                 key={field.name}
                 label={field.label}
                 type={field.type}
-                placeholder={field.placeholder}
+                // placeholder={field.placeholder}
                 {...register(field.name)}
                 error={errors[field.name]?.message}
               />
             ))}
-          </Box>
+          </div>
         </FormContainer>
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            width: "100%",
-            mt: 4,
-          }}
-        >
+        <div className="flex justify-center w-full mt-4">
           <Button
             variant="contained"
             type="submit"
@@ -113,8 +84,8 @@ export default function AboutYou() {
           >
             Next
           </Button>
-        </Box>
-      </Box>
+        </div>
+      </div>
     </form>
   );
 }

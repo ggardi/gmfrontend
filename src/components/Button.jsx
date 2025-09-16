@@ -1,51 +1,43 @@
 import React from "react";
-import PropTypes from "prop-types";
-import Button from "@mui/material/Button";
-import CircularProgress from "@mui/material/CircularProgress";
 
-import { useTheme } from "@mui/material/styles";
+const Button = ({
+  children,
+  disabled = false,
+  className = "",
+  width,
+  height,
+  fullWidth = false,
+  style = {},
+  ...props
+}) => {
+  const baseClasses = [
+    "inline-flex items-center justify-center",
+    "text-base font-semibold leading-tight",
+    "transition-all duration-150",
+    fullWidth ? "w-full" : "",
+    disabled
+      ? "bg-[var(--color-button-disabled)] text-[#00000099] cursor-not-allowed"
+      : "bg-[var(--color-primary)] text-white hover:opacity-80 cursor-pointer",
+    className,
+  ].join(" ");
 
-const GuildButton = ({ children, loading, disabled, color, sx, ...props }) => {
-  const theme = useTheme();
+  const buttonStyle = {
+    width: width || (fullWidth ? "100%" : 121),
+    height: height || 48,
+    borderRadius: 0,
+    ...style,
+  };
+
   return (
-    <Button
-      color={color}
-      disabled={disabled || loading}
-      sx={{
-        minWidth: 121,
-        minHeight: 48,
-        fontSize: 16,
-        borderRadius: 0,
-        textTransform: "none",
-        boxShadow: "none",
-        ...sx,
-        ...(disabled || loading
-          ? { color: theme.palette.text.primary + " !important" }
-          : {}),
-      }}
-      startIcon={
-        loading ? <CircularProgress color="inherit" size={20} /> : null
-      }
+    <button
+      className={baseClasses}
+      disabled={disabled}
+      style={buttonStyle}
       {...props}
     >
       {children}
-    </Button>
+    </button>
   );
 };
 
-GuildButton.propTypes = {
-  color: PropTypes.string,
-  children: PropTypes.node.isRequired,
-  loading: PropTypes.bool,
-  disabled: PropTypes.bool,
-  sx: PropTypes.object,
-};
-
-GuildButton.defaultProps = {
-  loading: false,
-  disabled: false,
-  color: "inherit",
-  sx: {},
-};
-
-export default GuildButton;
+export default Button;

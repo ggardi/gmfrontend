@@ -1,0 +1,36 @@
+@import "tailwindcss";
+
+/* Font Registration */
+@font-face {
+  font-family: "GuildCircularWeb";
+  src: url("/fonts/GuildCircularWeb-Book.woff2") format("woff2"),
+    url("/fonts/GuildCircularWeb-Book.woff") format("woff"),
+    url("/fonts/GuildCircularWeb-Book.eot") format("embedded-opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Tailwind Theme Variables */
+@theme {
+  --font-display: "GuildCircularWeb", sans-serif;
+  --font-display--font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  --font-display--font-variation-settings: "opsz" 32;
+
+  --color-primary: #262a82;
+  --color-white: #ffffff;
+  --color-button-disabled: #dfdfdf;
+  --color-light-grey: #f8f9f9;
+
+  --color-success: #166534;
+  --color-warning: #92400e;
+  --color-info: #0c4a6e;
+
+  --color-success-bg: #dcfce7;
+  --color-warning-bg: #fef3c7;
+  --color-info-bg: #f0f9ff;
+
+  --color-success-border: #bbf7d0;
+  --color-warning-border: #fde68a;
+  --color-info-border: #bae6fd;
+}

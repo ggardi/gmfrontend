@@ -2,5 +2,6 @@
   "ENVIRONMENT": "production",
   "API_URL": "https://api.example.com",
   "ANALYTICS_KEY": "prod-analytics-key",
-  "LOGOPATH": "https://myaccount.guildmortgage.com/lib/uploads/branches/logos/"
+  "LOGOPATH": "https://myaccount.guildmortgage.com/lib/uploads/branches/logos/",
+  "GUILD_BASE_URL": "https://www.guildmortgage.com"
 }

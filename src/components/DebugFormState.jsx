@@ -1,33 +1,27 @@
 import React from "react";
-import Box from "@mui/material/Box";
 import { useFormStore } from "../store/formStore";
 
 export default function DebugFormState() {
   const formData = useFormStore((state) => state.formData);
+
+  const containerClasses = [
+    "fixed bottom-4 right-4",
+    "bg-white text-[#222]",
+    "border border-[#ccc]",
+    "rounded",
+    "p-2",
+    "shadow-lg",
+    "z-[2000]",
+    "text-xs",
+    "max-w-xs max-h-[300px]",
+    "overflow-auto",
+    "opacity-95",
+  ].join(" ");
+
   return (
-    <Box
-      sx={{
-        position: "fixed",
-        bottom: 16,
-        right: 16,
-        bgcolor: "#fff",
-        color: "#222",
-        border: "1px solid #ccc",
-        borderRadius: 2,
-        p: 2,
-        boxShadow: 3,
-        zIndex: 2000,
-        fontSize: 12,
-        maxWidth: 320,
-        maxHeight: 300,
-        overflow: "auto",
-        opacity: 0.95,
-      }}
-    >
+    <div className={containerClasses}>
       <strong>Form State (Debug):</strong>
-      <pre style={{ margin: 0, fontSize: 11 }}>
-        {JSON.stringify(formData, null, 2)}
-      </pre>
-    </Box>
+      <pre className="m-0 text-[11px]">{JSON.stringify(formData, null, 2)}</pre>
+    </div>
   );
 }

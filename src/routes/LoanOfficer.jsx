@@ -195,24 +195,15 @@ export default function LoanOfficer() {
   }
   return (
     <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-        }}
-      >
+      <Box>
         <FormContainer>
           <h2>Select a loan officer</h2>
           <Box
             sx={{
               display: "flex",
-              flexDirection: "row",
               flexWrap: "wrap",
               gap: 2,
-              width: "100%",
-              alignItems: "center",
-              justifyContent: "center",
+              mb: 2,
             }}
           >
             {[
@@ -255,7 +246,10 @@ export default function LoanOfficer() {
                 iconTest: !!branchLocation,
               },
             ].map((field) => (
-              <Box key={field.key}>
+              <Box
+                key={field.key}
+                sx={{ flex: 1, minWidth: 200, width: { xs: 200, sm: "auto" } }}
+              >
                 <h3>{field.label}</h3>
                 <FormInput
                   label={field.placeholder}
@@ -295,31 +289,26 @@ export default function LoanOfficer() {
                 />
               </Box>
             ))}
-            <Box>
-              <FormControl sx={{ m: 1, minWidth: 60 }} fullWidth>
-                <InputLabel shrink htmlFor="radius-dropdown">
-                  Distance
-                </InputLabel>
-                <RadiusDropdown
-                  value={radiusValue}
-                  onChange={(e) => {
-                    setValue("radius", e.target.value, {
-                      shouldDirty: true,
-                      shouldValidate: true,
-                    });
-                    updateField("radius", e.target.value);
-                  }}
-                  selectProps={{
-                    id: "radius-dropdown",
-                    error: !!errors.radiusValue,
-                  }}
-                />
-                {errors.radiusValue && (
-                  <Box sx={{ color: "error.main", fontSize: 13, mt: 1 }}>
-                    {errors.radiusValue.message}
-                  </Box>
-                )}
-              </FormControl>
+            <Box sx={{ mt: 7 }}>
+              <RadiusDropdown
+                value={radiusValue}
+                onChange={(e) => {
+                  setValue("radius", e.target.value, {
+                    shouldDirty: true,
+                    shouldValidate: true,
+                  });
+                  updateField("radius", e.target.value);
+                }}
+                selectProps={{
+                  id: "radius-dropdown",
+                  error: !!errors.radiusValue,
+                }}
+              />
+              {errors.radiusValue && (
+                <Box sx={{ color: "error.main", fontSize: 13, mt: 1 }}>
+                  {errors.radiusValue.message}
+                </Box>
+              )}
             </Box>
           </Box>
           <SearchResults

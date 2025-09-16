@@ -1,79 +1,70 @@
-import React, { useEffect, useState } from "react";
+import React, { useRef } from "react";
 import defaultLogo from "../assets/img/guild-logo.svg";
-import AppBar from "@mui/material/AppBar";
-import Toolbar from "@mui/material/Toolbar";
-
-import Box from "@mui/material/Box";
 import { useFormStore } from "../store/formStore";
 
 const DEFAULT_LOGO = defaultLogo;
 
 const Header = ({ domainConfig }) => {
   const domainName = useFormStore((state) => state.formData.domainName);
-  const [logoSrc, setLogoSrc] = useState(domainConfig.logoUrl || DEFAULT_LOGO);
   const logoAlt = domainName ? `${domainName} Logo` : "Site Logo";
   const logoLink = domainConfig.headerLogoLink;
+  const imgRef = useRef(null);
 
-  useEffect(() => {
-    if (!domainConfig.logoUrl || domainConfig.logoUrl === DEFAULT_LOGO) {
-      setLogoSrc(DEFAULT_LOGO);
-      return;
+  // Handler to fallback to default logo if image fails to load
+  const handleLogoError = () => {
+    if (imgRef.current && imgRef.current.src !== DEFAULT_LOGO) {
+      imgRef.current.src = DEFAULT_LOGO;
     }
-    const img = new window.Image();
-    img.onload = () => setLogoSrc(domainConfig.logoUrl);
-    img.onerror = () => setLogoSrc(DEFAULT_LOGO);
-    img.src = domainConfig.logoUrl;
-  }, [domainConfig.logoUrl]);
+  };
+
+  // Grouped Tailwind classes for maintainability
+  const headerClasses = [
+    "bg-white px-10",
+    "shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1),0_2px_4px_-1px_rgba(0,0,0,0.06)]", // bottom shadow only
+  ].join(" ");
+
+  const navLinkClasses = [
+    "mr-4 self-center",
+    "text-base text-gray-700 hover:text-primary transition-colors duration-150",
+  ].join(" ");
 
   return (
-    <AppBar
-      position="static"
-      color="default"
-      sx={{ bgcolor: "#fff", padding: "0 40px" }}
-    >
-      <Toolbar>
-        <Box sx={{ flexGrow: 1 }}>
+    <header className={headerClasses}>
+      <div className="flex items-center min-h-[64px]">
+        <div className="flex-grow">
           <a
             href={logoLink}
             target="_blank"
             rel="noopener noreferrer"
-            style={{ display: "inline-flex", alignItems: "center" }}
+            className="inline-flex items-center"
           >
-            <Box
-              component="img"
-              src={logoSrc}
+            <img
+              ref={imgRef}
+              src={domainConfig.logoUrl || DEFAULT_LOGO}
               alt={logoAlt}
-              sx={{
-                width: 126,
-                height: "auto",
-                display: "block",
-                margin: "23px 0",
-              }}
+              className="w-[126px] h-auto block my-[23px]"
+              onError={handleLogoError}
             />
           </a>
-        </Box>
-        <Box
-          sx={{
-            display: "flex",
-            gap: 2,
-            justifyContent: "flex-end",
-            flexGrow: 0,
-          }}
-        >
+        </div>
+        <div className="flex gap-2 justify-end flex-grow-0">
           <a
             href={logoLink}
             target="_blank"
             rel="noopener noreferrer"
-            style={{ marginRight: 16, alignSelf: "center" }}
+            className={navLinkClasses}
           >
             Back to Site
           </a>
-          <a href="/contact-us" style={{ alignSelf: "center" }}>
+          <a
+            href="/contact-us"
+            className="self-center text-base text-gray-700 hover:text-primary transition-colors duration-150"
+          >
             Contact Us
           </a>
-        </Box>
-      </Toolbar>
-    </AppBar>
+        </div>
+      </div>
+    </header>
   );
 };
 

@@ -1,7 +1,4 @@
 import { useMsal } from "@azure/msal-react";
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
-import Button from "@mui/material/Button";
 
 const AuthStatus = ({ onNext }) => {
   const { accounts } = useMsal();
@@ -9,25 +6,52 @@ const AuthStatus = ({ onNext }) => {
 
   if (!user) return null;
 
-  // Use claims if available for name/email, fallback to username
+  // Grouped Tailwind classes for maintainability
+  const containerClasses = [
+    "text-center",
+    "p-6",
+    "flex flex-col items-center",
+  ].join(" ");
+
+  const sectionClasses = ["mb-4"].join(" ");
+
+  const labelClasses = [
+    "text-xs font-semibold text-gray-700 uppercase tracking-wide",
+    "mb-1 mt-4 first:mt-0",
+  ].join(" ");
+
+  // Simplified: single string for value/info classes
+  const valueClasses = "text-base text-gray-900";
+  const infoTextClasses = "mb-4 text-sm text-gray-700";
+
   return (
-    <Box sx={{ textAlign: "center", p: 3 }}>
-      <Typography variant="body1" sx={{ mb: 2 }}>
+    <div className={containerClasses}>
+      <div className={infoTextClasses}>
         Here's the name and email we have on file for you. By clicking next, you
         will be creating an application with this information.
-      </Typography>
-      <Box sx={{ mb: 2 }}>
-        <Typography variant="subtitle2">Name</Typography>
-        <Typography variant="body2">{user.name || user.username}</Typography>
-        <Typography variant="subtitle2" sx={{ mt: 2 }}>
-          Email
-        </Typography>
-        <Typography variant="body2">{user.username}</Typography>
-      </Box>
-      <Button variant="contained" onClick={onNext}>
+      </div>
+      <div className={sectionClasses}>
+        <div className={labelClasses}>Name</div>
+        <div className={valueClasses}>{user.name || user.username}</div>
+        <div className={labelClasses}>Email</div>
+        <div className={valueClasses}>{user.username}</div>
+      </div>
+      <button
+        type="button"
+        className={[
+          "inline-flex items-center justify-center",
+          "bg-[var(--color-primary)] text-white",
+          "hover:opacity-80",
+          "transition-all duration-150",
+          "w-[121px] h-[48px]",
+          "text-base font-semibold leading-tight",
+          "cursor-pointer",
+        ].join(" ")}
+        onClick={onNext}
+      >
         Next
-      </Button>
-    </Box>
+      </button>
+    </div>
   );
 };
 

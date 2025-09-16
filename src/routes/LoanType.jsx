@@ -1,15 +1,13 @@
 import React from "react";
 import { useFormStore } from "../store/formStore";
-import Box from "@mui/material/Box";
-import RadioGroup from "@mui/material/RadioGroup";
-import FormControl from "@mui/material/FormControl";
+// Removed Material UI imports
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { loanTypeSchema } from "../config/stepValidationSchemas";
 import { FormContainer, Button, IconRadioOption } from "../components";
-import PurchaseIcon from "../assets/PurchaseIcon.svg";
-import RefinanceIcon from "../assets/RefinanceIcon.svg";
+import PurchaseIcon from "../assets/purchaseIcon.svg";
+import RefinanceIcon from "../assets/refinanceIcon.svg";
 
 export default function LoanType() {
   const setParam = useFormStore((state) => state.updateField);
@@ -35,83 +33,62 @@ export default function LoanType() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-        }}
-      >
+      <div className="flex flex-col items-center w-full">
         <FormContainer>
-          <h2>Select a loan type</h2>
-          <FormControl>
-            <RadioGroup
-              row
-              aria-labelledby="select-loan-type"
-              name="loanType"
-              value={selectedLoanType}
-              onChange={(e) =>
-                setValue("loanType", e.target.value, { shouldDirty: true })
-              }
-            >
-              {[
-                {
-                  value: "purchase",
-                  label: "Purchase",
-                  icon: PurchaseIcon,
-                  imgMb: 1,
-                },
-                {
-                  value: "refinance",
-                  label: "Refinance",
-                  icon: RefinanceIcon,
-                  imgMb: 2,
-                },
-              ].map((option) => (
-                <IconRadioOption
-                  key={option.value}
-                  value={option.value}
-                  label={option.label}
-                  icon={option.icon}
-                  imgMb={option.imgMb}
-                  checked={selectedLoanType === option.value}
-                  onChange={(e) =>
-                    setValue("loanType", e.target.value, { shouldDirty: true })
-                  }
-                  name="loanType"
-                  sx={{ mx: 2 }}
-                />
-              ))}
-            </RadioGroup>
-          </FormControl>
+          <h2 className="mb-4 text-lg font-semibold text-center">
+            Select a loan type
+          </h2>
+          <div className="flex flex-row justify-center gap-4 mb-4">
+            {[
+              {
+                value: "purchase",
+                label: "Purchase",
+                icon: PurchaseIcon,
+                imgMb: 1,
+              },
+              {
+                value: "refinance",
+                label: "Refinance",
+                icon: RefinanceIcon,
+                imgMb: 2,
+              },
+            ].map((option) => (
+              <IconRadioOption
+                key={option.value}
+                value={option.value}
+                label={option.label}
+                icon={option.icon}
+                imgMb={option.imgMb}
+                checked={selectedLoanType === option.value}
+                onChange={(e) =>
+                  setValue("loanType", e.target.value, { shouldDirty: true })
+                }
+                name="loanType"
+              />
+            ))}
+          </div>
         </FormContainer>
-        <Box
-          display="flex"
-          justifyContent="space-between"
-          alignItems="center"
-          mt={4}
-          width="100%"
-        >
+        <div className="flex justify-between items-center mt-4 w-full max-w-lg">
           <Button
             type="button"
             onClick={() => navigate(-1)}
-            sx={{ minWidth: 110, ml: { xs: 0, sm: 7 } }}
+            className="min-w-[110px] ml-0 sm:ml-7"
           >
             {"< Back"}
           </Button>
-          <Box flexGrow={1} display="flex" justifyContent="center">
+          <div className="flex-grow flex justify-center">
             <Button
               variant="contained"
               type="submit"
               disabled={!selectedLoanType}
-              sx={{ minWidth: 110 }}
+              className="min-w-[110px]"
             >
               Next
             </Button>
-          </Box>
-          <Box width="75px" /> {/* Adjust width as needed */}
-        </Box>
-      </Box>
+          </div>
+          <div style={{ width: 75 }} /> {/* Adjust width as needed */}
+        </div>
+      </div>
     </form>
   );
 }
