@@ -52,7 +52,7 @@ const FormInput = ({
   const errorClasses = "mt-1 text-sm text-red-500";
 
   return (
-    <div className="mb-4 relative">
+    <div className="relative">
       <input
         id={id}
         className={inputBaseClasses}

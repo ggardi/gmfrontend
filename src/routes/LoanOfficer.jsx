@@ -1,17 +1,10 @@
-import Pagination from "@mui/material/Pagination";
 import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import Box from "@mui/material/Box";
-import Radio from "@mui/material/Radio";
-import InputAdornment from "@mui/material/InputAdornment";
-import IconButton from "@mui/material/IconButton";
 import { useNavigate } from "react-router-dom";
-import { FormContainer, Button, FormInput } from "../components";
+import { FormContainer, Button, FormInput, Dropdown } from "../components";
 import { useFormStore } from "../store/formStore";
-import RadiusDropdown from "../components/RadiusDropdown";
-import { FormControl, InputLabel } from "@mui/material";
 
 import SearchIcon from "../components/SearchIcon";
 import CloseIcon from "../components/CloseIcon";
@@ -127,85 +120,90 @@ export default function LoanOfficer() {
     pageSize,
   }) {
     if (!show) return null;
+    const totalPages = Math.ceil(total / pageSize);
     return (
-      <Box
-        display={"flex"}
-        flexDirection="column"
-        width="100%"
-        mt={type === "branch" ? 2 : undefined}
+      <div
+        className={`flex flex-col w-full ${type === "branch" ? "mt-2" : ""}`}
       >
-        <Box
-          sx={{
-            width: "100%",
-            bgcolor: "#f9f9f9",
-            border: "1px solid #eee",
-            borderRadius: 1,
-            mt: 1,
-            mb: 2,
-            p: 1,
-          }}
-        >
+        <div className="w-full bg-gray-50 border border-gray-200 rounded mt-1 mb-2 p-1">
           {results.map((item) => (
-            <Box
+            <div
               key={item.id}
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                py: 0.5,
-                px: 1,
-                cursor: "pointer",
-                bgcolor: selectedId === item.id ? "#e0f7fa" : undefined,
-                "&:hover": { bgcolor: "#ececec" },
-              }}
+              className={`flex items-center justify-between py-1 px-2 cursor-pointer rounded transition-colors ${
+                selectedId === item.id ? "bg-cyan-100" : "hover:bg-gray-200"
+              }`}
               onClick={() => onSelect(item.id, item.name)}
             >
-              <Box sx={{ display: "flex", alignItems: "center" }}>
-                <img src="" />
-                {item.name}{" "}
-                <span style={{ color: "#aaa", fontSize: 12, marginLeft: 6 }}>
-                  ({item.id})
-                </span>
-              </Box>
-              <Box sx={{ display: "flex", alignItems: "center" }}>
-                <Radio
+              <div className="flex items-center">
+                {/* Optionally add an icon here */}
+                <span>{item.name}</span>
+                <span className="text-xs text-gray-400 ml-2">({item.id})</span>
+              </div>
+              <div className="flex items-center ml-2">
+                <input
+                  type="radio"
                   checked={selectedId === item.id}
+                  onChange={() => onSelect(item.id, item.name)}
+                  className="form-radio text-primary focus:ring-primary h-4 w-4"
                   value={item.id}
                   tabIndex={-1}
-                  onChange={() => onSelect(item.id, item.name)}
-                  sx={{ ml: 2 }}
+                  name={type}
                 />
-              </Box>
-            </Box>
+              </div>
+            </div>
           ))}
-        </Box>
-        <Pagination
-          count={Math.ceil(total / pageSize)}
-          page={page}
-          onChange={(_, value) => setPage(value)}
-          sx={{ mt: 2, display: "flex", justifyContent: "center" }}
-          size="small"
-          color="primary"
-          showFirstButton
-          showLastButton
-          disabled={total <= pageSize}
-        />
-      </Box>
+        </div>
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div className="flex justify-center mt-2 gap-1">
+            <button
+              type="button"
+              className="px-2 py-1 rounded border text-xs disabled:opacity-50"
+              onClick={() => setPage(1)}
+              disabled={page === 1}
+            >
+              «
+            </button>
+            <button
+              type="button"
+              className="px-2 py-1 rounded border text-xs disabled:opacity-50"
+              onClick={() => setPage(page - 1)}
+              disabled={page === 1}
+            >
+              ‹
+            </button>
+            <span className="px-2 py-1 text-xs">
+              Page {page} of {totalPages}
+            </span>
+            <button
+              type="button"
+              className="px-2 py-1 rounded border text-xs disabled:opacity-50"
+              onClick={() => setPage(page + 1)}
+              disabled={page === totalPages}
+            >
+              ›
+            </button>
+            <button
+              type="button"
+              className="px-2 py-1 rounded border text-xs disabled:opacity-50"
+              onClick={() => setPage(totalPages)}
+              disabled={page === totalPages}
+            >
+              »
+            </button>
+          </div>
+        )}
+      </div>
     );
   }
   return (
     <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
-      <Box>
+      <div className="flex flex-col items-center w-full">
         <FormContainer>
-          <h2>Select a loan officer</h2>
-          <Box
-            sx={{
-              display: "flex",
-              flexWrap: "wrap",
-              gap: 2,
-              mb: 2,
-            }}
-          >
+          <h2 className="mb-4 text-lg font-semibold text-center">
+            Select a loan officer
+          </h2>
+          <div className="flex flex-wrap gap-4 mb-4 w-full items-end">
             {[
               {
                 key: "officer",
@@ -246,51 +244,48 @@ export default function LoanOfficer() {
                 iconTest: !!branchLocation,
               },
             ].map((field) => (
-              <Box
+              <div
                 key={field.key}
-                sx={{ flex: 1, minWidth: 200, width: { xs: 200, sm: "auto" } }}
+                className="flex-1 min-w-[200px] w-full sm:w-auto flex flex-col justify-end"
               >
-                <h3>{field.label}</h3>
-                <FormInput
-                  label={field.placeholder}
-                  type="text"
-                  value={field.value}
-                  onChange={(e) => {
-                    const value = e.target.value;
-                    field.setValueFn(value);
-                    if (value) {
-                      field.setLast();
-                    } else if (!field.otherValue) {
-                      field.clearLast();
-                    }
-                  }}
-                  endAdornment={
-                    <InputAdornment position="end">
-                      {field.iconTest ? (
-                        <IconButton
-                          edge="end"
-                          tabIndex={-1}
-                          onClick={() => {
-                            field.setValueFn("");
-                            field.setResults([]);
-                            field.clearFormState();
-                            if (!field.otherValue) field.clearLast();
-                          }}
-                        >
-                          <CloseIcon />
-                        </IconButton>
-                      ) : (
-                        <IconButton edge="end" tabIndex={-1} disabled>
-                          <SearchIcon />
-                        </IconButton>
-                      )}
-                    </InputAdornment>
-                  }
-                />
-              </Box>
+                <h3 className="mb-1 font-medium">{field.label}</h3>
+                <div className="relative">
+                  <FormInput
+                    label={field.placeholder}
+                    type="text"
+                    value={field.value}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      field.setValueFn(value);
+                      if (value) {
+                        field.setLast();
+                      } else if (!field.otherValue) {
+                        field.clearLast();
+                      }
+                    }}
+                    className="pr-10 h-[44px]"
+                  />
+                  <button
+                    type="button"
+                    tabIndex={-1}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none"
+                    onClick={() => {
+                      if (field.iconTest) {
+                        field.setValueFn("");
+                        field.setResults([]);
+                        field.clearFormState();
+                        if (!field.otherValue) field.clearLast();
+                      }
+                    }}
+                  >
+                    {field.iconTest ? <CloseIcon /> : <SearchIcon />}
+                  </button>
+                </div>
+              </div>
             ))}
-            <Box sx={{ mt: 7 }}>
-              <RadiusDropdown
+            <div className="flex-1 min-w-[80px] w-full sm:w-auto flex flex-col justify-end">
+              <h3 className="mb-1 font-medium">Radius</h3>
+              <Dropdown
                 value={radiusValue}
                 onChange={(e) => {
                   setValue("radius", e.target.value, {
@@ -299,18 +294,21 @@ export default function LoanOfficer() {
                   });
                   updateField("radius", e.target.value);
                 }}
+                options={[5, 10, 15, 20, 25, 50, 75, 100]}
+                label="Radius"
                 selectProps={{
                   id: "radius-dropdown",
                   error: !!errors.radiusValue,
+                  className: "h-[44px]",
                 }}
               />
               {errors.radiusValue && (
-                <Box sx={{ color: "error.main", fontSize: 13, mt: 1 }}>
+                <div className="text-red-600 text-xs mt-1">
                   {errors.radiusValue.message}
-                </Box>
+                </div>
               )}
-            </Box>
-          </Box>
+            </div>
+          </div>
           <SearchResults
             show={lastSearchType === "officer" && officerResults.length > 0}
             results={officerResults}
@@ -356,28 +354,21 @@ export default function LoanOfficer() {
             pageSize={pageSize}
           />
         </FormContainer>
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            width: "100%",
-            mt: 4,
-          }}
-        >
+        <div className="flex justify-center w-full mt-4">
           <Button
-            variant="contained"
             type="submit"
             disabled={!isDirty || !isValid}
+            className="min-w-[110px]"
           >
             Next
           </Button>
-          {errors && errors["one-required"] && (
-            <Box sx={{ color: "red", mt: 1, fontSize: 14 }}>
-              {errors["one-required"].message}
-            </Box>
-          )}
-        </Box>
-      </Box>
+        </div>
+        {errors && errors["one-required"] && (
+          <div className="text-red-600 mt-1 text-sm text-center">
+            {errors["one-required"].message}
+          </div>
+        )}
+      </div>
     </form>
   );
 }
