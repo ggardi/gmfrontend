@@ -1,5 +1,5 @@
 // src/authConfig.js
-// Replace below with your Azure B2C tenant and app registration info
+// Replace below with Azure B2C tenant and app registration info
 
 export const msalConfig = {
   auth: {

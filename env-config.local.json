@@ -3,5 +3,6 @@
   "API_URL": "http://localhost:3000/api",
   "ANALYTICS_KEY": "local-analytics-key",
   "LOGOPATH": "https://myaccount.guildmortgage.com/lib/uploads/branches/logos/",
-  "GUILD_BASE_URL": "https://www-ppd.guildmortgage.com"
+  "GUILD_BASE_URL": "https://www-ppd.guildmortgage.com",
+  "RECAPTCHA_SITE_KEY": "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
 }

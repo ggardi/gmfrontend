@@ -1,13 +1,9 @@
 import React from "react";
-import Box from "@mui/material/Box";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { propertyStateSchema } from "../config/stepValidationSchemas";
-import { FormContainer, Button } from "../components";
+import { FormContainer, Button, Dropdown } from "../components";
 import { useFormStore } from "../store/formStore";
 
 export default function PropertyState() {
@@ -33,82 +29,55 @@ export default function PropertyState() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
-      <Box
-        sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}
-      >
+      <div className="flex flex-col items-center w-full">
         <FormContainer>
-          <h2>Select your property state</h2>
-          {/* //In what state is the property you're looking to purchase? */}
-          <Box
-            sx={{
-              gap: 2,
-              display: "flex",
-              flexDirection: { xs: "column", sm: "row", m: "row" },
-              width: "100%",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <Box
-              component="h3"
-              sx={{
-                fontWeight: "normal",
-                m: 0,
-                maxWidth: 300,
-              }}
-            >
+          <h2 className="mb-4 text-lg font-semibold text-center">
+            Select your property state
+          </h2>
+          <div className="flex flex-col sm:flex-row gap-4 w-full items-center justify-center mb-4">
+            <h3 className="font-normal m-0 max-w-[300px] text-base text-center sm:text-left">
               In what state is the property you're looking to purchase?
-            </Box>
-            <FormControl
-              sx={{ m: 1, minWidth: 120 }}
-              error={!!errors.propertyState}
-            >
-              <Select
+            </h3>
+            <div className="flex flex-col">
+              <Dropdown
+                label="State"
                 value={propertyState}
-                onChange={() => {}}
-                displayEmpty
+                onChange={(e) => {}}
+                options={[
+                  { value: "CA", label: "CA" },
+                  { value: "TX", label: "TX" },
+                  { value: "CO", label: "CO" },
+                ]}
                 {...register("propertyState")}
-              >
-                <MenuItem value=""> State </MenuItem>
-                <MenuItem value={"CA"}>CA</MenuItem>
-                <MenuItem value={"TX"}>TX</MenuItem>
-                <MenuItem value={"CO"}>CO</MenuItem>
-              </Select>
+              />
               {errors.propertyState && (
-                <Box sx={{ color: "error.main", fontSize: 13, mt: 1 }}>
+                <div className="text-red-600 text-xs mt-1">
                   {errors.propertyState.message}
-                </Box>
+                </div>
               )}
-            </FormControl>
-          </Box>
+            </div>
+          </div>
         </FormContainer>
-        <Box
-          display="flex"
-          justifyContent="space-between"
-          alignItems="center"
-          mt={4}
-          width="100%"
-        >
+        <div className="flex justify-between items-center mt-4 w-full max-w-lg">
           <Button
             type="button"
             onClick={() => navigate(-1)}
-            sx={{ ml: { xs: 0, sm: 7 } }}
+            className="min-w-[110px] ml-0 sm:ml-7"
           >
             {"< Back"}
           </Button>
-          <Box flexGrow={1} display="flex" justifyContent="center">
+          <div className="flex-grow flex justify-center">
             <Button
-              variant="contained"
               type="submit"
               disabled={!isDirty || !isValid}
-              sx={{ minWidth: 110 }}
+              className="min-w-[110px]"
             >
               Next
             </Button>
-          </Box>
-          <Box width="75px" /> {/* Adjust width as needed */}
-        </Box>
-      </Box>
+          </div>
+          <div style={{ width: 75 }} /> {/* Adjust width as needed */}
+        </div>
+      </div>
     </form>
   );
 }

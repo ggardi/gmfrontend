@@ -6,8 +6,8 @@ import LoanOfficer from "./routes/LoanOfficer";
 import ReviewSubmit from "./routes/ReviewSubmit";
 import CreatePassword from "./routes/CreatePassword";
 import { useEffect, useState } from "react";
-import { loadConfig } from "./utils/configLoader";
-import { getAppParams, getDomainConfig } from "./config/appConfig";
+import { loadConfig } from "./config/runtimeConfigLoader";
+import { getAppParams, getDomainConfig } from "./config/brandingConfig";
 import { useFormStore } from "./store/formStore";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
@@ -15,14 +15,13 @@ import DebugFormState from "./components/DebugFormState";
 
 export default function App() {
   // Load runtime config before rendering app
+  const [runtimeConfig, setRuntimeConfig] = useState(null);
   const [configLoaded, setConfigLoaded] = useState(false);
   const [configError, setConfigError] = useState(null);
   useEffect(() => {
     loadConfig()
       .then((cfg) => {
-        // Optionally: make config available via context or global state
-        // For now, just log it
-        console.log("Loaded runtime config:", cfg);
+        setRuntimeConfig(cfg);
         setConfigLoaded(true);
       })
       .catch((err) => {
@@ -64,8 +63,10 @@ export default function App() {
           <Route path="/loan-type" element={<LoanType />} />
           <Route path="/property-state" element={<PropertyState />} />
           <Route path="/loan-officer" element={<LoanOfficer />} />
-          <Route path="/review-submit" element={<ReviewSubmit />} />
-          <Route path="/create-password" element={<CreatePassword />} />
+          <Route
+            path="/review-submit"
+            element={<ReviewSubmit runtimeConfig={runtimeConfig} />}
+          />
         </Routes>
       </main>
       <Footer domainConfig={domainConfig} />
