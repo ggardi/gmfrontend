@@ -3,11 +3,15 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useNavigate } from "react-router-dom";
-import { FormContainer, Button, FormInput, Dropdown } from "../components";
+import {
+  FormContainer,
+  Button,
+  FormInput,
+  Dropdown,
+  SearchIcon,
+  CloseIcon,
+} from "../components";
 import { useFormStore } from "../store/formStore";
-
-import SearchIcon from "../components/SearchIcon";
-import CloseIcon from "../components/CloseIcon";
 
 // Validation: require either officerId or branchId
 const loanOfficerStepSchema = yup
@@ -53,14 +57,22 @@ export default function LoanOfficer() {
   useEffect(() => {
     if (officerName.length >= 3) {
       const timeout = setTimeout(() => {
-        // Simulate a large dataset
+        // Simulate a large dataset with all fields
         const allResults = Array.from({ length: 23 }, (_, i) => ({
           id: `officer${i + 1}`,
           name: `${officerName} Officer ${i + 1}`,
+          title: `Loan Officer Title ${i + 1}`,
+          phone: `555-000${i + 1}`,
+          headshot: `https://example.com/headshot${i + 1}.jpg`,
+          email: `officer${i + 1}@guild.com`,
+          branch: {
+            name: `Branch ${i + 1}`,
+            id: `branch${i + 1}`,
+            phone: `555-100${i + 1}`,
+          },
         }));
         setOfficerTotal(allResults.length);
-        const start = (officerPage - 1) * pageSize;
-        setOfficerResults(allResults.slice(start, start + pageSize));
+        setOfficerResults(allResults);
       }, 400);
       return () => clearTimeout(timeout);
     } else {
@@ -78,14 +90,21 @@ export default function LoanOfficer() {
   useEffect(() => {
     if (branchLocation.length >= 3) {
       const timeout = setTimeout(() => {
-        // Simulate a large dataset
+        // Simulate a large dataset with all fields
         const allResults = Array.from({ length: 17 }, (_, i) => ({
           id: `branch${i + 1}`,
           name: `${branchLocation} Branch ${i + 1}`,
+          phone: `555-200${i + 1}`,
+          email: `branch${i + 1}@guild.com`,
+          address: {
+            street: `${i + 1} Main St`,
+            city: `City${i + 1}`,
+            state: "CA",
+            zip: `9000${i + 1}`,
+          },
         }));
         setBranchTotal(allResults.length);
-        const start = (branchPage - 1) * pageSize;
-        setBranchResults(allResults.slice(start, start + pageSize));
+        setBranchResults(allResults);
       }, 400);
       return () => clearTimeout(timeout);
     } else {
@@ -102,9 +121,44 @@ export default function LoanOfficer() {
 
   const onSubmit = (data) => {
     // Only allow submit if one is selected (enforced by schema)
-    updateField("officerId", data.officerId || "");
-    updateField("branchId", data.branchId || "");
-    navigate("/loan-type");
+    if (data.officerId) {
+      updateField("loanOfficer", (prev) => ({
+        ...prev,
+        id: data.officerId,
+      }));
+      updateField("branch", (prev) => ({
+        ...prev,
+        id: "",
+      }));
+    } else if (data.branchId) {
+      updateField("branch", (prev) => ({
+        ...prev,
+        id: data.branchId,
+      }));
+      updateField("loanOfficer", (prev) => ({
+        ...prev,
+        id: "",
+      }));
+    }
+    navigate("/review-submit");
+  };
+
+  // Default empty structures for resetting
+  const defaultLoanOfficer = {
+    name: "",
+    title: "",
+    phone: "",
+    headshot: "",
+    email: "",
+    id: "",
+    branch: { name: "", id: "", phone: "" },
+  };
+  const defaultBranch = {
+    name: "",
+    id: "",
+    phone: "",
+    email: "",
+    address: { street: "", city: "", state: "", zip: "" },
   };
 
   // Combined SearchResults: handles both results and pagination
@@ -120,12 +174,11 @@ export default function LoanOfficer() {
     pageSize,
   }) {
     if (!show) return null;
-    const totalPages = Math.ceil(total / pageSize);
     return (
       <div
         className={`flex flex-col w-full ${type === "branch" ? "mt-2" : ""}`}
       >
-        <div className="w-full bg-gray-50 border border-gray-200 rounded mt-1 mb-2 p-1">
+        <div className="w-full bg-gray-50 border border-gray-200 rounded mt-1 mb-2 p-1 max-h-60 overflow-y-auto">
           {results.map((item) => (
             <div
               key={item.id}
@@ -153,46 +206,6 @@ export default function LoanOfficer() {
             </div>
           ))}
         </div>
-        {/* Pagination */}
-        {totalPages > 1 && (
-          <div className="flex justify-center mt-2 gap-1">
-            <button
-              type="button"
-              className="px-2 py-1 rounded border text-xs disabled:opacity-50"
-              onClick={() => setPage(1)}
-              disabled={page === 1}
-            >
-              «
-            </button>
-            <button
-              type="button"
-              className="px-2 py-1 rounded border text-xs disabled:opacity-50"
-              onClick={() => setPage(page - 1)}
-              disabled={page === 1}
-            >
-              ‹
-            </button>
-            <span className="px-2 py-1 text-xs">
-              Page {page} of {totalPages}
-            </span>
-            <button
-              type="button"
-              className="px-2 py-1 rounded border text-xs disabled:opacity-50"
-              onClick={() => setPage(page + 1)}
-              disabled={page === totalPages}
-            >
-              ›
-            </button>
-            <button
-              type="button"
-              className="px-2 py-1 rounded border text-xs disabled:opacity-50"
-              onClick={() => setPage(totalPages)}
-              disabled={page === totalPages}
-            >
-              »
-            </button>
-          </div>
-        )}
       </div>
     );
   }
@@ -217,7 +230,7 @@ export default function LoanOfficer() {
                     shouldDirty: true,
                     shouldValidate: true,
                   });
-                  updateField("officerId", "");
+                  updateField("loanOfficer", (prev) => ({ ...prev, id: "" }));
                 },
                 otherValue: branchLocation,
                 setLast: () => setLastSearchType("officer"),
@@ -236,7 +249,7 @@ export default function LoanOfficer() {
                     shouldDirty: true,
                     shouldValidate: true,
                   });
-                  updateField("branchId", "");
+                  updateField("branch", (prev) => ({ ...prev, id: "" }));
                 },
                 otherValue: officerName,
                 setLast: () => setLastSearchType("branch"),
@@ -322,8 +335,9 @@ export default function LoanOfficer() {
                 shouldDirty: true,
                 shouldValidate: true,
               });
-              updateField("officerId", id);
-              updateField("branchId", "");
+              const selected = officerResults.find((o) => o.id === id);
+              updateField("loanOfficer", () => selected || defaultLoanOfficer);
+              updateField("branch", () => defaultBranch);
             }}
             type="officer"
             total={officerTotal}
@@ -344,8 +358,9 @@ export default function LoanOfficer() {
                 shouldDirty: true,
                 shouldValidate: true,
               });
-              updateField("branchId", id);
-              updateField("officerId", "");
+              const selected = branchResults.find((b) => b.id === id);
+              updateField("branch", () => selected || defaultBranch);
+              updateField("loanOfficer", () => defaultLoanOfficer);
             }}
             type="branch"
             total={branchTotal}

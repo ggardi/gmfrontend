@@ -3,6 +3,7 @@
   "API_URL": "https://api.example.com",
   "ANALYTICS_KEY": "prod-analytics-key",
   "LOGOPATH": "https://myaccount.guildmortgage.com/lib/uploads/branches/logos/",
+  "HEADSHOT_URL": "https://static-images.guildmortgage.com/lib/uploads/officers/head-shots/",
   "GUILD_BASE_URL": "https://www.guildmortgage.com",
   "RECAPTCHA_SITE_KEY": "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
 }

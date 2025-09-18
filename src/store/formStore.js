@@ -1,3 +1,4 @@
+import AlertTitle from "@mui/material/AlertTitle";
 import { create } from "zustand";
 
 export const useFormStore = create((set) => ({
@@ -8,9 +9,22 @@ export const useFormStore = create((set) => ({
     email: "",
     loanType: "",
     propertyState: "",
-    loanOfficer: "",
-    officerId: "",
-    branchId: "",
+    loanOfficer: {
+      name: "",
+      title: "",
+      phone: "",
+      headshot: "",
+      email: "",
+      id: "",
+      branch: { name: "", id: "", phone: "" },
+    },
+    branch: {
+      name: "",
+      id: "",
+      phone: "",
+      email: "",
+      address: { street: "", city: "", state: "", zip: "" },
+    },
     domainName: "",
     radius: "", // Not required, but tracked
   },
@@ -20,7 +34,8 @@ export const useFormStore = create((set) => ({
     set((state) => ({
       formData: {
         ...state.formData,
-        [field]: value,
+        [field]:
+          typeof value === "function" ? value(state.formData[field]) : value,
       },
     })),
 
@@ -33,9 +48,22 @@ export const useFormStore = create((set) => ({
         email: "",
         loanType: "",
         propertyState: "",
-        loanOfficer: "",
-        officerId: "",
-        branchId: "",
+        loanOfficer: {
+          name: "",
+          title: "",
+          phone: "",
+          headshot: "", //https://static-images-dev.guildmortgage.com/lib/uploads/officers/head-shots/detbr-tim-brown.jpg
+          email: "",
+          id: "",
+          branch: { name: "", id: "", phone: "" },
+        },
+        branch: {
+          name: "",
+          id: "",
+          phone: "",
+          email: "",
+          address: { street: "", city: "", state: "", zip: "" },
+        },
         domainName: "",
         radius: "",
       },

@@ -29,12 +29,30 @@ export default function App() {
       });
   }, []);
   const updateField = useFormStore((state) => state.updateField);
+
+  // Set initial formStore data with new nested format
   useEffect(() => {
     if (!configLoaded) return;
     const { domainName, officerId, branchId } = getAppParams();
+    // Set top-level fields
     updateField("domainName", domainName);
-    if (officerId) updateField("officerId", officerId);
-    if (branchId) updateField("branchId", branchId);
+    // Set nested loanOfficer and branch objects with default structure
+    updateField("loanOfficer", {
+      name: "",
+      title: "",
+      phone: "",
+      headshot: "",
+      email: "",
+      id: officerId || "",
+      branch: { name: "", id: branchId || "", phone: "" },
+    });
+    updateField("branch", {
+      name: "",
+      id: branchId || "",
+      phone: "",
+      email: "",
+      address: { street: "", city: "", state: "", zip: "" },
+    });
   }, [updateField, configLoaded]);
 
   if (configError) {

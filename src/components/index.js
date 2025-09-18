@@ -4,4 +4,6 @@ export { default as FormContainer } from "./FormContainer";
 export { default as AuthStatus } from "./AuthStatus";
 export { default as IconRadioOption } from "./IconRadioOption";
 export { default as Dropdown } from "./Dropdown";
-// Add other components here as needed
+export { default as Select } from "./Select";
+export { default as SearchIcon } from "./SearchIcon";
+export { default as CloseIcon } from "./CloseIcon";

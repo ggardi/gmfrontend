@@ -31,15 +31,12 @@ const IconRadioOption = ({
 
   return (
     <label className={containerClasses}>
-      {/* Icon at the top */}
       {typeof icon === "string" ? (
         <img src={icon} alt="" className={iconClasses} />
       ) : (
         <span className={iconClasses}>{icon}</span>
       )}
-      {/* Label below icon, above radio */}
       <span className={labelClasses}>{label}</span>
-      {/* Custom radio indicator below label */}
       <div className="flex flex-col items-center mt-2 mb-2">
         <input
           type="radio"
@@ -50,7 +47,6 @@ const IconRadioOption = ({
           className="peer appearance-none w-5 h-5 border border-gray-400 rounded-full checked:border-[var(--color-primary)] checked:bg-[var(--color-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] transition-colors duration-150 mb-1"
           {...rest}
         />
-        {/* Custom dot for checked state */}
         <span className="-mt-6 pointer-events-none absolute">
           {checked && (
             <span className="block w-3 h-3 bg-white border-2 border-[var(--color-primary)] rounded-full mx-auto mt-1"></span>
