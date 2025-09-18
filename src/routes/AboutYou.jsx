@@ -43,7 +43,7 @@ export default function AboutYou() {
     <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
       <div className="flex flex-col items-center justify-center w-full">
         <FormContainer>
-          <h2>About You</h2>
+          <h2 className="mb-4 text-lg font-semibold text-center">About You</h2>
           <div className="flex flex-col gap-6 w-full items-center justify-center p-10">
             {[
               {

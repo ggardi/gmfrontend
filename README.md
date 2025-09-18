@@ -120,7 +120,7 @@ npm test
 ### How to Run a Single Test File
 
 ```
-npx jest src/components/__tests__/AuthStatus.test.jsx
+npx test src/components/__tests__/AuthStatus.test.jsx
 ```
 
 ### Watch Mode (auto re-run on changes)
